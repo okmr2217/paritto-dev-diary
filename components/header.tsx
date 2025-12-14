@@ -3,10 +3,10 @@ import { ThemeToggle } from "@/components/theme-toggle";
 
 export function Header() {
   return (
-    <header className="border-b border-border">
+    <header className="sticky top-0 z-50 border-b border-border bg-background">
       <div className="container mx-auto flex h-16 max-w-3xl items-center justify-between px-4">
         <Link href="/" className="text-xl font-bold">
-          Blog
+          Daichi Blog 2
         </Link>
         <nav className="flex items-center gap-4">
           <Link

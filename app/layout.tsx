@@ -12,7 +12,7 @@ const notoSansJP = Noto_Sans_JP({
 });
 
 export const metadata: Metadata = {
-  title: "ブログ",
+  title: "Daichi Blog 2",
   description: "個人の技術ブログ",
 };
 
