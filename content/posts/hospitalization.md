@@ -1,6 +1,6 @@
 ---
 title: "バイク事故から回復までの35日間"
-date: "2024-12-15"
+date: "2025年12月15日"
 description: "事故当日から約1ヶ月間の入院生活を、祖父が毎日記録してくれていたものをもとにまとめたものです。"
 tags: ["バイク", "事故"]
 thumbnail: "zoshua-colah-_fdWqec7VRo-unsplash_hlasto"

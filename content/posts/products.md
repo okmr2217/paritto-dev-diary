@@ -1,6 +1,6 @@
 ---
 title: "プロダクト一覧"
-date: "2024-12-16"
+date: "2025年12月16日"
 description: "これまでに開発したWebサービスやサイトをまとめています。Next.jsを中心としたモダンな技術スタックを活用し、個人開発に取り組んでいます。"
 tags: ["個人開発"]
 thumbnail: "lauren-mancke-aOC7TSLb1o8-unsplash_tkopax"

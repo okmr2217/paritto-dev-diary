@@ -6,9 +6,7 @@ import { Footer } from "@/components/footer";
 import "./globals.css";
 
 const notoSansJP = Noto_Sans_JP({
-  variable: "--font-noto-sans-jp",
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
 });
 
 export const metadata: Metadata = {
@@ -35,7 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" suppressHydrationWarning>
-      <body className={`${notoSansJP.variable} font-sans antialiased`}>
+      <body className={`${notoSansJP.className} antialiased`}>
         <ThemeProvider>
           <div className="flex min-h-screen flex-col">
             <Header />

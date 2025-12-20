@@ -38,7 +38,7 @@ export default async function PostPage({ params }: Props) {
   const thumbnailUrl = post.thumbnail ? getThumbnailUrl(post.thumbnail) : null;
 
   return (
-    <article className="container mx-auto max-w-176 px-4 py-8">
+    <article className="container mx-auto max-w-176 p-4 pb-12">
       {thumbnailUrl && (
         <div className="relative mb-8 aspect-video w-full overflow-hidden rounded-lg">
           <Image
@@ -68,7 +68,7 @@ export default async function PostPage({ params }: Props) {
         )}
       </header>
       <div
-        className="prose"
+        className="prose max-w-none"
         dangerouslySetInnerHTML={{ __html: post.content }}
       />
     </article>
