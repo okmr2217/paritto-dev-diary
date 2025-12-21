@@ -4,7 +4,6 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import "./globals.css";
-import { ProfileCard } from "@/components/profile-card";
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],
@@ -21,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja" suppressHydrationWarning>
+    <html lang="ja" suppressHydrationWarning className="scroll-pt-16">
       <body className={`${notoSansJP.className} antialiased`}>
         <ThemeProvider>
           <div className="flex min-h-screen flex-col">

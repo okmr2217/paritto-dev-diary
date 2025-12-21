@@ -6,6 +6,8 @@ import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
 import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
+import remarkToc from "remark-toc";
+import rehypeSlug from "rehype-slug";
 
 const postsDirectory = path.join(process.cwd(), "content/posts");
 
@@ -60,7 +62,9 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
   const processedContent = await unified()
     .use(remarkParse)
     .use(remarkGfm)
+    .use(remarkToc, { heading: "目次" })
     .use(remarkRehype)
+    .use(rehypeSlug)
     .use(rehypeStringify)
     .process(content);
   const contentHtml = processedContent.toString();

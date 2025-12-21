@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 export function ProfileCard() {
   return (
     <Card>
-      <CardContent className="flex gap-6">
+      <CardContent className="flex gap-4 flex-col sm:flex-row">
         <div className="shrink-0">
           <Image
             src="/profile.jpg"
