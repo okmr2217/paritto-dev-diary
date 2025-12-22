@@ -1,5 +1,5 @@
 ---
-title: "プロダクト一覧"
+title: "これまでに開発したWebサービスやサイトの一覧"
 date: "2025年12月16日"
 description: "これまでに開発したWebサービスやサイトをまとめています。Next.jsを中心としたモダンな技術スタックを活用し、個人開発に取り組んでいます。"
 tags: ["個人開発"]
@@ -9,14 +9,14 @@ tags: ["個人開発"]
 
 ## 目次
 
-## Daichi Blog 2
+## パリッと開発日記
 
 Claude Codeを活用して開発しました。
 記事データはマークダウンで管理しており、画像はClaudinaryという外部サービスを利用して公開しています。
 
 - **リリース:** 2025年 12月
 - **技術スタック:** Claude Code, Next.js, remark
-- **リンク:** [Daichi Blog 2](https://daichi-blog2.vercel.app/)
+- **リンク:** [パリッと開発日記](https://paritto-dev-diary.vercel.app/)
 
 ## Todo日記
 

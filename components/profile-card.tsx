@@ -22,7 +22,7 @@ export function ProfileCard() {
             18歳になったタイミングで正社員として入社し、現在はWeb開発に従事しています。
           </p>
           <a
-            href="https://github.com/your-username"
+            href="https://github.com/yamaneko05"
             target="_blank"
             rel="noopener noreferrer"
             className="mt-3 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
