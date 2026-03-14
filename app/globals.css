@@ -158,6 +158,17 @@
   }
 }
 
+/* Portrait image constraint for article content */
+@media (min-width: 768px) {
+  .portrait-image {
+    max-width: min(400px, 50%) !important;
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
 /* Custom utility classes for editorial design */
 @layer utilities {
   .tech-gradient {

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getPostBySlug, getAllPostSlugs } from "@/lib/posts";
 import type { Metadata } from "next";
 import { PageHero } from "@/components/page-hero";
+import { ArticleContent } from "@/components/article-content";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -53,10 +54,7 @@ export default async function PostPage({ params }: Props) {
           )}
         </div>
       </PageHero>
-      <div
-        className="prose prose-sm sm:prose-base dark:prose-invert max-w-none"
-        dangerouslySetInnerHTML={{ __html: post.content }}
-      />
+      <ArticleContent html={post.content} />
     </div>
   );
 }
