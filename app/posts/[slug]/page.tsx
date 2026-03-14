@@ -3,6 +3,7 @@ import { getPostBySlug, getAllPostSlugs } from "@/lib/posts";
 import type { Metadata } from "next";
 import { PageHero } from "@/components/page-hero";
 import { ArticleContent } from "@/components/article-content";
+import { StoryImageDownloader } from "@/components/story-image-downloader";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -21,9 +22,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: "記事が見つかりません" };
   }
 
+  const description =
+    post.description ||
+    post.content.replace(/<[^>]*>/g, "").slice(0, 150).trim();
+  const url = `https://paritto-dev-diary.vercel.app/posts/${slug}`;
+
   return {
     title: post.title,
-    description: post.description,
+    description,
+    openGraph: {
+      title: post.title,
+      description,
+      type: "article",
+      url,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description,
+    },
   };
 }
 
@@ -55,6 +72,14 @@ export default async function PostPage({ params }: Props) {
         </div>
       </PageHero>
       <ArticleContent html={post.content} />
+      <div className="flex justify-center pt-4">
+        <StoryImageDownloader
+          title={post.title}
+          description={post.description}
+          firstImageUrl={post.firstImageUrl}
+          slug={slug}
+        />
+      </div>
     </div>
   );
 }

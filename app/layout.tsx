@@ -27,6 +27,11 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "https://paritto-dev-diary.vercel.app",
+  ),
   title: {
     default: "パリッと開発日記",
     template: "%s | パリッと開発日記",

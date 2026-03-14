@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
+import { cache } from "react";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
@@ -21,6 +22,7 @@ export type PostMeta = {
 
 export type Post = PostMeta & {
   content: string;
+  firstImageUrl: string | null;
 };
 
 export function getAllPosts(): PostMeta[] {
@@ -49,7 +51,9 @@ export function getAllPosts(): PostMeta[] {
   return posts.sort((a, b) => (a.date > b.date ? -1 : 1));
 }
 
-export async function getPostBySlug(slug: string): Promise<Post | null> {
+export const getPostBySlug = cache(async function getPostBySlug(
+  slug: string,
+): Promise<Post | null> {
   const fullPath = path.join(postsDirectory, `${slug}.md`);
 
   if (!fs.existsSync(fullPath)) {
@@ -69,6 +73,9 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
     .process(content);
   const contentHtml = processedContent.toString();
 
+  const imageMatch = content.match(/!\[.*?\]\((.*?)\)/);
+  const firstImageUrl = imageMatch ? imageMatch[1] : null;
+
   return {
     slug,
     title: data.title || slug,
@@ -76,8 +83,9 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
     description: data.description || "",
     tags: data.tags || [],
     content: contentHtml,
+    firstImageUrl,
   };
-}
+});
 
 export function getAllPostSlugs(): string[] {
   if (!fs.existsSync(postsDirectory)) {
