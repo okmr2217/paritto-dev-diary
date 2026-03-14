@@ -176,6 +176,33 @@ export function StoryImageDownloader({
       ctx.fillRect(PAD, y, CONTENT_W, 1);
       y += 50;
 
+      // --- Pre-calculate text heights to maximize image area ---
+      const titleFontSize = 58;
+      const titleLineH = titleFontSize * 1.45;
+      ctx.font = `700 ${titleFontSize}px 'IBM Plex Sans JP', 'Noto Sans JP', sans-serif`;
+      const titleLines = wrapText(ctx, title, CONTENT_W);
+      const titleBlockH = titleLines.length * titleLineH + 20;
+
+      const descFontSize = 30;
+      const descLineH = descFontSize * 1.7;
+      let descLines: string[] = [];
+      let descBlockH = 0;
+      if (description) {
+        ctx.font = `400 ${descFontSize}px 'Noto Sans JP', sans-serif`;
+        descLines = wrapText(ctx, description, CONTENT_W, 3);
+        descBlockH = descLines.length * descLineH;
+      }
+
+      // Footer area: accent line + URL + bottom padding
+      const footerH = 100;
+      // Gaps between sections
+      const imgBottomGap = 56;
+      const textGap = 20;
+
+      // Available height for image = total - header - separator - texts - footer
+      const usedH = y + 50 + titleBlockH + textGap + descBlockH + imgBottomGap + footerH;
+      const availableImgH = H - usedH;
+
       // --- Article image ---
       let articleImg: HTMLImageElement | null = null;
       if (firstImageUrl) {
@@ -185,11 +212,9 @@ export function StoryImageDownloader({
       if (articleImg) {
         const imgAspect = articleImg.width / articleImg.height;
         const drawW = CONTENT_W;
-        let drawH = drawW / imgAspect;
-        const maxImgH = 680;
-        if (drawH > maxImgH) {
-          drawH = maxImgH;
-        }
+        // Use natural aspect ratio, capped to available space
+        const naturalH = drawW / imgAspect;
+        const drawH = Math.min(naturalH, Math.max(availableImgH, 200));
 
         // Soft shadow behind image
         ctx.save();
@@ -201,30 +226,26 @@ export function StoryImageDownloader({
         ctx.restore();
 
         drawRoundedImage(ctx, articleImg, PAD, y, drawW, drawH, 20);
-        y += drawH + 56;
+        y += drawH + imgBottomGap;
       }
 
       // --- Title (larger) ---
       ctx.fillStyle = "#0f172a";
-      ctx.font = "700 58px 'IBM Plex Sans JP', 'Noto Sans JP', sans-serif";
+      ctx.font = `700 ${titleFontSize}px 'IBM Plex Sans JP', 'Noto Sans JP', sans-serif`;
       ctx.textAlign = "center";
-      const titleLines = wrapText(ctx, title, CONTENT_W);
-      const titleLineHeight = 58 * 1.45;
       for (const line of titleLines) {
-        ctx.fillText(line, W / 2, y + 58);
-        y += titleLineHeight;
+        ctx.fillText(line, W / 2, y + titleFontSize);
+        y += titleLineH;
       }
-      y += 20;
+      y += textGap;
 
       // --- Description ---
-      if (description) {
+      if (descLines.length > 0) {
         ctx.fillStyle = "#64748b";
-        ctx.font = "400 30px 'Noto Sans JP', sans-serif";
-        const descLines = wrapText(ctx, description, CONTENT_W, 3);
-        const descLineHeight = 30 * 1.7;
+        ctx.font = `400 ${descFontSize}px 'Noto Sans JP', sans-serif`;
         for (const line of descLines) {
-          ctx.fillText(line, W / 2, y + 30);
-          y += descLineHeight;
+          ctx.fillText(line, W / 2, y + descFontSize);
+          y += descLineH;
         }
       }
 
