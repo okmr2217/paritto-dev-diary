@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Bash(find /c/Development/Production/パリッと開発日記/paritto-dev-diary -type f -not -path */node_modules/* -not -path */.next/* -not -path */.git/*)"
+    ]
+  }
+}
