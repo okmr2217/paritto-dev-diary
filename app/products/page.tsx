@@ -106,6 +106,21 @@ export default async function ProductsPage({ searchParams }: PageProps) {
           ))}
         </div>
       )}
+      {/* Past works archive */}
+      <Link
+        href="/posts/past-works"
+        className="group flex items-center justify-between rounded-xl border border-border bg-muted/30 px-6 py-4 transition-colors hover:border-accent/50 hover:bg-muted/60"
+      >
+        <div className="space-y-0.5">
+          <p className="text-sm font-medium">過去のプロダクト一覧</p>
+          <p className="text-xs text-muted-foreground">
+            Prisma 移行前に開発したサービスのアーカイブ
+          </p>
+        </div>
+        <span className="text-muted-foreground transition-transform group-hover:translate-x-1">
+          →
+        </span>
+      </Link>
     </div>
   );
 }

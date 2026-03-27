@@ -28,19 +28,19 @@ export function Header() {
             href="/"
             className="relative text-sm font-medium font-heading transition-colors hover:text-accent after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:tech-gradient after:transition-all after:duration-300 hover:after:w-full"
           >
-            Blog
+            ブログ
           </Link>
           <Link
             href="/about"
             className="relative text-sm font-medium font-heading transition-colors hover:text-accent after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:tech-gradient after:transition-all after:duration-300 hover:after:w-full"
           >
-            About
+            自己紹介
           </Link>
           <Link
             href="/products"
             className="relative text-sm font-medium font-heading transition-colors hover:text-accent after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:tech-gradient after:transition-all after:duration-300 hover:after:w-full"
           >
-            Works
+            プロダクト
           </Link>
           <ThemeToggle />
         </nav>
