@@ -78,7 +78,7 @@ function parseStatus(value: string | null): Status | null {
 function parseSort(value: string | null): Sort {
   return (VALID_SORTS as readonly string[]).includes(value ?? "")
     ? (value as Sort)
-    : "releaseDate_desc";
+    : "updated_desc";
 }
 
 function buildQuery(
@@ -89,7 +89,7 @@ function buildQuery(
   const params = new URLSearchParams();
   if (category) params.set("category", category);
   if (status) params.set("status", status);
-  if (sort !== "releaseDate_desc") params.set("sort", sort);
+  if (sort !== "updated_desc") params.set("sort", sort);
   return params.toString();
 }
 
