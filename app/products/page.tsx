@@ -2,8 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { PageHero } from "@/components/page-hero";
-import { ProductCard } from "@/components/product-card";
-import { CATEGORY_LABELS } from "@/lib/product-constants";
+import { ProductsClient } from "./products-client";
 
 export const revalidate = 60;
 
@@ -12,34 +11,9 @@ export const metadata: Metadata = {
   description: "個人開発したプロダクトの一覧です。",
 };
 
-const VALID_CATEGORIES = ["APP", "MCP", "SITE"] as const;
-type Category = (typeof VALID_CATEGORIES)[number];
-
-function isValidCategory(value: string): value is Category {
-  return (VALID_CATEGORIES as readonly string[]).includes(value);
-}
-
-const CATEGORY_FILTERS: { label: string; value: string | null }[] = [
-  { label: "すべて", value: null },
-  { label: CATEGORY_LABELS.APP, value: "APP" },
-  { label: CATEGORY_LABELS.MCP, value: "MCP" },
-  { label: CATEGORY_LABELS.SITE, value: "SITE" },
-];
-
-interface PageProps {
-  searchParams: Promise<{ category?: string }>;
-}
-
-export default async function ProductsPage({ searchParams }: PageProps) {
-  const { category: rawCategory } = await searchParams;
-  const activeCategory =
-    rawCategory && isValidCategory(rawCategory) ? rawCategory : null;
-
+export default async function ProductsPage() {
   const products = await prisma.product.findMany({
-    where: {
-      isPublic: true,
-      ...(activeCategory ? { category: activeCategory } : {}),
-    },
+    where: { isPublic: true },
     orderBy: { sortOrder: "asc" },
     select: {
       slug: true,
@@ -48,64 +22,74 @@ export default async function ProductsPage({ searchParams }: PageProps) {
       category: true,
       status: true,
       stacks: true,
+      releaseDate: true,
       images: {
         where: { isThumbnail: true },
         take: 1,
         select: { url: true, alt: true, isThumbnail: true },
       },
+      releases: {
+        where: { isDraft: false },
+        orderBy: { releaseDate: "desc" },
+        take: 1,
+        select: { releaseDate: true },
+      },
     },
   });
 
+  const stats = {
+    total: products.length,
+    released: products.filter((p) =>
+      ["RELEASED", "MAINTENANCE"].includes(p.status)
+    ).length,
+    developing: products.filter((p) =>
+      ["DEVELOPING", "IDEA"].includes(p.status)
+    ).length,
+  };
+
+  const serializedProducts = products.map((p) => ({
+    slug: p.slug,
+    name: p.name,
+    description: p.description,
+    category: p.category as string,
+    status: p.status as string,
+    stacks: p.stacks,
+    releaseDate: p.releaseDate ? p.releaseDate.toISOString() : null,
+    lastUpdated: p.releases[0]?.releaseDate
+      ? p.releases[0].releaseDate.toISOString()
+      : null,
+    thumbnail: p.images[0] ?? null,
+  }));
+
   return (
     <div className="space-y-8">
-      <PageHero
-        title="プロダクト"
-        description="個人開発したプロダクトの一覧です。"
-      />
-
-      {/* Category filter */}
-      <nav className="flex gap-2 flex-wrap">
-        {CATEGORY_FILTERS.map(({ label, value }) => {
-          const isActive = activeCategory === value;
-          const href =
-            value === null ? "/products" : `/products?category=${value}`;
-          return (
-            <Link
-              key={label}
-              href={href}
-              className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
-                isActive
-                  ? "tech-gradient text-white"
-                  : "border border-border hover:bg-muted text-muted-foreground"
-              }`}
-            >
-              {label}
-            </Link>
-          );
-        })}
-      </nav>
-
-      {/* Grid */}
-      {products.length === 0 ? (
-        <p className="text-sm text-muted-foreground py-12 text-center">
-          該当するプロダクトはありません。
-        </p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products.map((product) => (
-            <ProductCard
-              key={product.slug}
-              slug={product.slug}
-              name={product.name}
-              description={product.description}
-              category={product.category}
-              status={product.status}
-              stacks={product.stacks}
-              thumbnail={product.images[0] ?? null}
-            />
-          ))}
+      {/* Header with stats */}
+      <div className="space-y-4">
+        <PageHero
+          title="プロダクト"
+          description="個人開発したプロダクトの一覧です。"
+        />
+        <div className="flex gap-2 flex-wrap">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground">
+            <span className="font-semibold text-foreground">{stats.total}</span>
+            プロダクト
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-green-100 dark:bg-green-900/30 px-3 py-1 text-xs text-green-700 dark:text-green-400">
+            <span className="font-semibold">{stats.released}</span>
+            リリース済
+          </span>
+          {stats.developing > 0 && (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-100 dark:bg-blue-900/30 px-3 py-1 text-xs text-blue-700 dark:text-blue-400">
+              <span className="font-semibold">{stats.developing}</span>
+              開発中
+            </span>
+          )}
         </div>
-      )}
+      </div>
+
+      {/* Filter, sort, and grid (client) */}
+      <ProductsClient products={serializedProducts} />
+
       {/* Past works archive */}
       <Link
         href="/posts/past-works"
