@@ -196,8 +196,8 @@ export function ProductsClient({ products }: ProductsClientProps) {
   return (
     <div className="space-y-6">
       {/* Filter & Sort Bar */}
-      <div className="space-y-3">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+      <div className="space-y-2">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
           {/* Category tabs */}
           <nav className="flex gap-2 flex-wrap flex-1">
             {CATEGORY_FILTERS.map(({ label, value }) => {
@@ -206,7 +206,7 @@ export function ProductsClient({ products }: ProductsClientProps) {
                 <button
                   key={label}
                   onClick={() => handleCategoryChange(value)}
-                  className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors cursor-pointer ${
+                  className={`rounded-full px-3 py-1 text-xs font-medium transition-colors cursor-pointer ${
                     isActive
                       ? "tech-gradient text-white"
                       : "border border-border hover:bg-muted text-muted-foreground"
@@ -222,7 +222,7 @@ export function ProductsClient({ products }: ProductsClientProps) {
           <select
             value={activeSort}
             onChange={(e) => handleSortChange(e.target.value as Sort)}
-            className="rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring w-full sm:w-auto cursor-pointer"
+            className="rounded-lg border border-border bg-background px-2.5 py-1 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-ring w-full sm:w-auto cursor-pointer"
           >
             {(Object.entries(SORT_LABELS) as [Sort, string][]).map(
               ([value, label]) => (
@@ -242,7 +242,7 @@ export function ProductsClient({ products }: ProductsClientProps) {
               <button
                 key={label}
                 onClick={() => handleStatusChange(value)}
-                className={`rounded-md px-3 py-1 text-xs font-medium transition-colors cursor-pointer ${
+                className={`rounded px-2.5 py-0.5 text-xs font-medium transition-colors cursor-pointer ${
                   isActive
                     ? "bg-foreground text-background"
                     : "border border-border hover:bg-muted text-muted-foreground"
