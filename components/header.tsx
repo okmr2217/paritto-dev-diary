@@ -23,9 +23,9 @@ export function Header() {
             パリッと開発日記
           </h1>
         </Link>
-        <nav className="flex items-center gap-6">
+        <nav className="flex items-center gap-4 md:gap-6">
           <Link
-            href="/"
+            href="/blog"
             className="relative text-sm font-medium font-heading transition-colors hover:text-accent after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:tech-gradient after:transition-all after:duration-300 hover:after:w-full"
           >
             ブログ
