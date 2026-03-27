@@ -37,7 +37,7 @@ export function Header() {
             About
           </Link>
           <Link
-            href="/posts/products"
+            href="/products"
             className="relative text-sm font-medium font-heading transition-colors hover:text-accent after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:tech-gradient after:transition-all after:duration-300 hover:after:w-full"
           >
             Works

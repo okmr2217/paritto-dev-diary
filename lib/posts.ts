@@ -18,6 +18,7 @@ export type PostMeta = {
   date: string;
   description: string;
   tags: string[];
+  productSlug?: string;
 };
 
 export type Post = PostMeta & {
@@ -45,6 +46,7 @@ export function getAllPosts(): PostMeta[] {
         date: data.date || "",
         description: data.description || "",
         tags: data.tags || [],
+        productSlug: data.productSlug || undefined,
       };
     });
 
