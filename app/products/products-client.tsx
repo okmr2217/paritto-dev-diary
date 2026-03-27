@@ -84,7 +84,7 @@ function parseSort(value: string | null): Sort {
 function buildQuery(
   category: Category | null,
   status: Status | null,
-  sort: Sort
+  sort: Sort,
 ): string {
   const params = new URLSearchParams();
   if (category) params.set("category", category);
@@ -99,13 +99,13 @@ export function ProductsClient({ products }: ProductsClientProps) {
   const [isPending, startTransition] = useTransition();
 
   const [activeCategory, setActiveCategory] = useState<Category | null>(
-    parseCategory(searchParams.get("category"))
+    parseCategory(searchParams.get("category")),
   );
   const [activeStatus, setActiveStatus] = useState<Status | null>(
-    parseStatus(searchParams.get("status"))
+    parseStatus(searchParams.get("status")),
   );
   const [activeSort, setActiveSort] = useState<Sort>(
-    parseSort(searchParams.get("sort"))
+    parseSort(searchParams.get("sort")),
   );
 
   // Sync from URL on back/forward navigation
@@ -229,7 +229,7 @@ export function ProductsClient({ products }: ProductsClientProps) {
                 <option key={value} value={value}>
                   {label}
                 </option>
-              )
+              ),
             )}
           </select>
         </div>
@@ -274,7 +274,7 @@ export function ProductsClient({ products }: ProductsClientProps) {
         >
           {/* Active products */}
           {activeProducts.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-6">
               {activeProducts.map((product) => (
                 <ProductCard
                   key={product.slug}

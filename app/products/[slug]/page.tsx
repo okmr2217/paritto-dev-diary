@@ -20,7 +20,8 @@ const RELEASE_TYPE_COLORS: Record<string, string> = {
   MAJOR: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
   MINOR: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
   PATCH: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  HOTFIX: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
+  HOTFIX:
+    "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
 };
 
 const STATUS_DOT_COLORS: Record<string, string> = {
@@ -57,7 +58,9 @@ export async function generateStaticParams() {
   return products.map((p) => ({ slug: p.slug }));
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProduct(slug);
 
@@ -85,7 +88,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
   return (
     <div className="space-y-12">
       {/* 1. Hero Section */}
-      <section className="relative pt-8">
+      <section className="relative pt-6">
         <div className="space-y-6 pb-8 border-b border-border">
           <div className="h-1 w-24 tech-gradient rounded-full" />
 
@@ -215,7 +218,9 @@ export default async function ProductDetailPage({ params }: PageProps) {
                   <span className="text-sm text-muted-foreground">
                     {new Date(release.releaseDate).toLocaleDateString("ja-JP")}
                   </span>
-                  <span className="font-medium text-foreground text-sm">{release.title}</span>
+                  <span className="font-medium text-foreground text-sm">
+                    {release.title}
+                  </span>
                   <ChevronDown
                     size={16}
                     className="ml-auto shrink-0 text-muted-foreground transition-transform duration-200 group-open:rotate-180"
@@ -261,7 +266,9 @@ export default async function ProductDetailPage({ params }: PageProps) {
                     {new Date(entry.createdAt).toLocaleString("ja-JP")}
                   </p>
                   {entry.note && (
-                    <p className="text-sm text-muted-foreground">{entry.note}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {entry.note}
+                    </p>
                   )}
                 </div>
               </div>

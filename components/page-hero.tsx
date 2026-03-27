@@ -8,7 +8,7 @@ interface PageHeroProps {
 
 export function PageHero({ title, description, children }: PageHeroProps) {
   return (
-    <section className="relative pt-8">
+    <section className="relative pt-6">
       <div className="space-y-4 pb-6 border-b border-border">
         <div className="h-1 w-24 tech-gradient rounded-full" />
         <div className="space-y-3">

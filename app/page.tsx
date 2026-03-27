@@ -39,7 +39,7 @@ export default async function Home() {
   return (
     <div className="space-y-10">
       {/* ── Hero ──────────────────────────────────────────── */}
-      <section className="relative pt-8 pb-4">
+      <section className="relative pt-6 pb-4">
         {/* Decorative gradient orbs */}
         <div className="absolute -top-8 -right-16 w-72 h-72 rounded-full tech-gradient opacity-[0.08] blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 -left-8 w-52 h-52 rounded-full bg-primary opacity-[0.07] blur-3xl pointer-events-none" />
