@@ -3,6 +3,7 @@ title: "「先週の火曜日、何してた？」にClaudeが答えてくれる
 date: "2026年3月19日"
 description: "furikaeri-mcpは、個人の活動データをClaudeから横断的に振り返れるMCPサーバーです。"
 tags: ["MCP", "Claude", "振り返り", "個人開発"]
+productSlug: "furikaeri-mcp"
 ---
 
 ## はじめに

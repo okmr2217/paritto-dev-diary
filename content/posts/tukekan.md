@@ -3,6 +3,7 @@ title: "友人間のお金の貸し借りを管理するWebアプリ「ツケカ
 date: "2025年1月2日"
 description: "スマホからサクッと入力できて、貸借状況がひと目でわかるWebアプリ"
 tags: ["個人開発"]
+productSlug: "tukekan"
 ---
 
 ## はじめに

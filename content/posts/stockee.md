@@ -3,6 +3,7 @@ title: "買い忘れ・買いすぎをなくすために、日用品在庫管理
 date: "2025年12月28日"
 description: "Stockeeは、日用品のストック状況をスマホから手軽に確認・更新できるWebアプリです。"
 tags: ["日用品", "在庫管理"]
+productSlug: "stockee"
 ---
 
 #
