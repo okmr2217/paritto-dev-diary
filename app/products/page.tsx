@@ -42,6 +42,7 @@ export default async function ProductsPage({ searchParams }: PageProps) {
     },
     orderBy: { sortOrder: "asc" },
     select: {
+      slug: true,
       name: true,
       description: true,
       category: true,
@@ -93,7 +94,8 @@ export default async function ProductsPage({ searchParams }: PageProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((product) => (
             <ProductCard
-              key={product.name}
+              key={product.slug}
+              slug={product.slug}
               name={product.name}
               description={product.description}
               category={product.category}

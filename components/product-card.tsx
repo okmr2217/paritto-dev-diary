@@ -14,6 +14,7 @@ interface ProductImage {
 }
 
 interface ProductCardProps {
+  slug: string;
   name: string;
   description: string | null;
   category: string;
@@ -23,6 +24,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({
+  slug,
   name,
   description,
   category,
@@ -35,7 +37,7 @@ export function ProductCard({
 
   return (
     <Link
-      href={`/products/${name}`}
+      href={`/products/${slug}`}
       className="group block rounded-xl border border-border bg-card overflow-hidden hover:shadow-lg transition-shadow duration-300"
     >
       {/* Thumbnail */}
