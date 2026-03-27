@@ -1,11 +1,11 @@
 import { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ExternalLink, Github, ChevronDown } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getAllPosts } from "@/lib/posts";
-import { PageHero } from "@/components/page-hero";
 import { PostCard } from "@/components/post-card";
+import { ScreenshotGallery } from "@/components/product/screenshot-gallery";
 import {
   STATUS_LABELS,
   CATEGORY_LABELS,
@@ -17,10 +17,10 @@ import {
 export const revalidate = 60;
 
 const RELEASE_TYPE_COLORS: Record<string, string> = {
-  MAJOR: "bg-red-100 text-red-700",
-  MINOR: "bg-blue-100 text-blue-700",
-  PATCH: "bg-green-100 text-green-700",
-  HOTFIX: "bg-orange-100 text-orange-700",
+  MAJOR: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+  MINOR: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+  PATCH: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  HOTFIX: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
 };
 
 const STATUS_DOT_COLORS: Record<string, string> = {
@@ -84,109 +84,103 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
   return (
     <div className="space-y-12">
-      {/* 1. Page header */}
-      <PageHero title={product.name}>
-        <div className="flex gap-2 flex-wrap">
-          <span
-            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${CATEGORY_COLORS[product.category] ?? "bg-gray-100 text-gray-700"}`}
-          >
-            {CATEGORY_LABELS[product.category] ?? product.category}
-          </span>
-          <span
-            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_COLORS[product.status] ?? "bg-gray-100 text-gray-700"}`}
-          >
-            {STATUS_LABELS[product.status] ?? product.status}
-          </span>
-        </div>
-      </PageHero>
+      {/* 1. Hero Section */}
+      <section className="relative pt-8">
+        <div className="space-y-6 pb-8 border-b border-border">
+          <div className="h-1 w-24 tech-gradient rounded-full" />
 
-      {/* 2. Image gallery */}
-      {product.images.length > 0 && (
-        <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {product.images.map((image) => (
-            <div
-              key={image.id}
-              className="relative aspect-video rounded-lg overflow-hidden bg-muted"
+          {/* Title + Badges */}
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="text-3xl md:text-4xl font-bold font-heading tech-gradient-text">
+              {product.name}
+            </h1>
+            <span
+              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${CATEGORY_COLORS[product.category] ?? "bg-gray-100 text-gray-700"}`}
             >
-              <Image
-                src={image.url}
-                alt={image.alt ?? product.name}
-                fill
-                className="object-cover"
-                sizes="(max-width: 640px) 100vw, 50vw"
-              />
-            </div>
-          ))}
-        </section>
-      )}
+              {CATEGORY_LABELS[product.category] ?? product.category}
+            </span>
+            <span
+              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_COLORS[product.status] ?? "bg-gray-100 text-gray-700"}`}
+            >
+              {STATUS_LABELS[product.status] ?? product.status}
+            </span>
+          </div>
 
-      {/* 3. Overview section */}
-      <section className="space-y-6">
-        <div className="space-y-3">
-          <p className="text-foreground leading-relaxed">{product.description}</p>
-          {product.longDescription && (
-            <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
-              {product.longDescription}
+          {/* Description */}
+          <div className="space-y-2">
+            <p className="text-lg font-semibold text-foreground leading-relaxed">
+              {product.description}
             </p>
-          )}
-        </div>
+            {product.longDescription && (
+              <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                {product.longDescription}
+              </p>
+            )}
+          </div>
 
-        <dl className="space-y-2 text-sm">
-          {product.releaseDate && (
-            <div className="flex gap-4">
-              <dt className="text-muted-foreground w-24 shrink-0">リリース日</dt>
-              <dd className="text-foreground">
-                {new Date(product.releaseDate).toLocaleDateString("ja-JP")}
-              </dd>
-            </div>
-          )}
-          {product.productUrl && (
-            <div className="flex gap-4">
-              <dt className="text-muted-foreground w-24 shrink-0">URL</dt>
-              <dd>
+          {/* CTA Buttons */}
+          {(product.productUrl || product.repositoryUrl) && (
+            <div className="flex gap-3 flex-wrap">
+              {product.productUrl && (
                 <a
                   href={product.productUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-accent hover:underline break-all"
+                  className="inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                 >
-                  {product.productUrl}
+                  アプリを開く
+                  <ExternalLink size={14} />
                 </a>
-              </dd>
-            </div>
-          )}
-          {product.repositoryUrl && (
-            <div className="flex gap-4">
-              <dt className="text-muted-foreground w-24 shrink-0">リポジトリ</dt>
-              <dd>
+              )}
+              {product.repositoryUrl && (
                 <a
                   href={product.repositoryUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-accent hover:underline break-all"
+                  className="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors"
                 >
-                  {product.repositoryUrl}
+                  <Github size={14} />
+                  リポジトリを見る
                 </a>
-              </dd>
+              )}
             </div>
           )}
-        </dl>
 
-        {product.stacks.length > 0 && (
-          <div className="flex gap-1.5 flex-wrap">
-            {product.stacks.map((stack) => (
-              <span
-                key={stack}
-                className="inline-flex items-center rounded px-1.5 py-0.5 text-xs bg-muted text-muted-foreground font-mono"
-              >
-                {stack}
-              </span>
-            ))}
-          </div>
-        )}
+          {/* Tech Stacks */}
+          {product.stacks.length > 0 && (
+            <div className="flex gap-1.5 flex-wrap">
+              {product.stacks.map((stack) => (
+                <span
+                  key={stack}
+                  className="inline-flex items-center rounded px-1.5 py-0.5 text-xs bg-muted text-muted-foreground font-mono"
+                >
+                  {stack}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
       </section>
 
-      {/* 4. Related posts */}
+      {/* 2. Screenshot Gallery */}
+      {product.images.length > 0 && (
+        <ScreenshotGallery images={product.images} productName={product.name} />
+      )}
+
+      {/* 3. Meta Info */}
+      {product.releaseDate && (
+        <section className="space-y-3">
+          <h2 className="text-xl font-bold font-heading">プロダクト情報</h2>
+          <div className="inline-flex items-center gap-3 rounded-lg bg-muted px-4 py-3 text-sm">
+            <span className="text-muted-foreground">リリース日</span>
+            <span className="text-foreground font-medium">
+              {new Date(product.releaseDate).toLocaleDateString("ja-JP")}
+            </span>
+          </div>
+        </section>
+      )}
+
+      {/* 4. Related Posts */}
       {relatedPosts.length > 0 && (
         <section className="space-y-4">
           <h2 className="text-xl font-bold font-heading">関連記事</h2>
@@ -198,18 +192,19 @@ export default async function ProductDetailPage({ params }: PageProps) {
         </section>
       )}
 
-      {/* 5. Release notes */}
+      {/* 5. Release Notes (Accordion) */}
       {product.releases.length > 0 && (
         <section className="space-y-4">
           <h2 className="text-xl font-bold font-heading">リリースノート</h2>
-          <div className="space-y-4">
-            {product.releases.map((release) => (
-              <div
+          <div className="space-y-2">
+            {product.releases.map((release, index) => (
+              <details
                 key={release.id}
-                className="rounded-lg border border-border bg-card p-4 space-y-2"
+                open={index === 0}
+                className="group rounded-lg border border-border bg-card overflow-hidden"
               >
-                <div className="flex items-center gap-3 flex-wrap">
-                  <span className="font-mono font-bold text-foreground">
+                <summary className="flex items-center gap-3 flex-wrap px-4 py-3 cursor-pointer hover:bg-muted/50 transition-colors [list-style:none] [&::-webkit-details-marker]:hidden">
+                  <span className="font-mono font-bold text-foreground text-sm">
                     {release.version}
                   </span>
                   <span
@@ -220,18 +215,24 @@ export default async function ProductDetailPage({ params }: PageProps) {
                   <span className="text-sm text-muted-foreground">
                     {new Date(release.releaseDate).toLocaleDateString("ja-JP")}
                   </span>
+                  <span className="font-medium text-foreground text-sm">{release.title}</span>
+                  <ChevronDown
+                    size={16}
+                    className="ml-auto shrink-0 text-muted-foreground transition-transform duration-200 group-open:rotate-180"
+                  />
+                </summary>
+                <div className="px-4 py-3 border-t border-border">
+                  <p className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                    {release.content}
+                  </p>
                 </div>
-                <p className="font-medium text-foreground">{release.title}</p>
-                <p className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
-                  {release.content}
-                </p>
-              </div>
+              </details>
             ))}
           </div>
         </section>
       )}
 
-      {/* 6. Status history */}
+      {/* 6. Status History */}
       {product.statusHistory.length > 0 && (
         <section className="space-y-4">
           <h2 className="text-xl font-bold font-heading">ステータス履歴</h2>
@@ -269,7 +270,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
         </section>
       )}
 
-      {/* 7. Footer link */}
+      {/* 7. Back Link */}
       <div>
         <Link
           href="/products"
