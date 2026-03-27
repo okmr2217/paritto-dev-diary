@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
 import { PageHero } from "@/components/page-hero";
 import { ProductsClient } from "./products-client";
@@ -88,7 +89,9 @@ export default async function ProductsPage() {
       </div>
 
       {/* Filter, sort, and grid (client) */}
-      <ProductsClient products={serializedProducts} />
+      <Suspense fallback={null}>
+        <ProductsClient products={serializedProducts} />
+      </Suspense>
 
       {/* Past works archive */}
       <Link
