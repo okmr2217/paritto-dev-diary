@@ -144,14 +144,14 @@ export default async function Home() {
               className="group flex gap-4 p-4 bg-card border border-border rounded-lg card-hover-lift overflow-hidden"
             >
               {/* Thumbnail */}
-              <div className="relative w-20 h-20 rounded-lg overflow-hidden bg-muted shrink-0">
+              <div className="relative w-28 h-28 rounded-lg overflow-hidden bg-muted shrink-0">
                 {product.images[0] ? (
                   <Image
                     src={product.images[0].url}
                     alt={product.images[0].alt ?? product.name}
                     fill
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    sizes="80px"
+                    sizes="112px"
                   />
                 ) : (
                   <div className="flex h-full items-center justify-center text-muted-foreground text-xs">
@@ -161,7 +161,7 @@ export default async function Home() {
               </div>
 
               {/* Content */}
-              <div className="flex-1 min-w-0 space-y-1.5">
+              <div className="flex-1 min-w-0 space-y-2">
                 <div className="flex gap-1.5 flex-wrap">
                   <span
                     className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${CATEGORY_COLORS[product.category] ?? "bg-gray-100 text-gray-700"}`}
@@ -174,11 +174,11 @@ export default async function Home() {
                     {STATUS_LABELS[product.status] ?? product.status}
                   </span>
                 </div>
-                <h3 className="font-semibold font-heading text-sm leading-snug group-hover:tech-gradient-text transition-all duration-200">
+                <h3 className="font-semibold font-heading leading-snug group-hover:tech-gradient-text transition-all duration-200">
                   {product.name}
                 </h3>
                 {product.description && (
-                  <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                  <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
                     {product.description}
                   </p>
                 )}
