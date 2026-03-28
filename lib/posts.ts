@@ -10,6 +10,10 @@ import rehypeStringify from "rehype-stringify";
 import remarkToc from "remark-toc";
 import rehypeSlug from "rehype-slug";
 
+export type { PostCategory } from "@/lib/post-constants";
+export { CATEGORY_LABELS } from "@/lib/post-constants";
+import type { PostCategory } from "@/lib/post-constants";
+
 const postsDirectory = path.join(process.cwd(), "content/posts");
 
 export type PostMeta = {
@@ -17,8 +21,9 @@ export type PostMeta = {
   title: string;
   date: string;
   description: string;
-  tags: string[];
+  category: PostCategory;
   productSlug?: string;
+  draft?: boolean;
 };
 
 export type Post = PostMeta & {
@@ -45,10 +50,12 @@ export function getAllPosts(): PostMeta[] {
         title: data.title || slug,
         date: data.date || "",
         description: data.description || "",
-        tags: data.tags || [],
+        category: (data.category as PostCategory) || "A",
         productSlug: data.productSlug || undefined,
+        draft: data.draft === true,
       };
-    });
+    })
+    .filter((post) => !post.draft);
 
   return posts.sort((a, b) => (a.date > b.date ? -1 : 1));
 }
@@ -64,6 +71,10 @@ export const getPostBySlug = cache(async function getPostBySlug(
 
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data, content } = matter(fileContents);
+
+  if (data.draft === true) {
+    return null;
+  }
 
   const processedContent = await unified()
     .use(remarkParse)
@@ -83,7 +94,7 @@ export const getPostBySlug = cache(async function getPostBySlug(
     title: data.title || slug,
     date: data.date || "",
     description: data.description || "",
-    tags: data.tags || [],
+    category: (data.category as PostCategory) || "A",
     content: contentHtml,
     firstImageUrl,
   };
@@ -97,5 +108,11 @@ export function getAllPostSlugs(): string[] {
   const fileNames = fs.readdirSync(postsDirectory);
   return fileNames
     .filter((fileName) => fileName.endsWith(".md"))
+    .filter((fileName) => {
+      const fullPath = path.join(postsDirectory, fileName);
+      const fileContents = fs.readFileSync(fullPath, "utf8");
+      const { data } = matter(fileContents);
+      return data.draft !== true;
+    })
     .map((fileName) => fileName.replace(/\.md$/, ""));
 }
