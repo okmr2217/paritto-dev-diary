@@ -197,10 +197,9 @@ export default function AboutPage() {
 
         <div className="space-y-6 max-w-4xl">
           {/* Yarukoto */}
-          <article className="group relative p-6 bg-card border border-border rounded-lg card-hover-lift">
-            <div className="absolute top-0 left-0 w-1 h-full tech-gradient rounded-l-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="relative pl-4 space-y-3">
-              <h3 className="text-lg font-bold font-heading group-hover:tech-gradient-text transition-all">
+          <article className="px-6 pt-5 pb-4 bg-card border border-border rounded-xl transition-shadow duration-300 hover:shadow-lg">
+            <div className="space-y-3">
+              <h3 className="text-lg font-bold font-heading">
                 Yarukoto
               </h3>
               <p className="text-muted-foreground leading-relaxed">
@@ -236,10 +235,9 @@ export default function AboutPage() {
           </article>
 
           {/* Monster Call */}
-          <article className="group relative p-6 bg-card border border-border rounded-lg card-hover-lift">
-            <div className="absolute top-0 left-0 w-1 h-full tech-gradient rounded-l-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="relative pl-4 space-y-3">
-              <h3 className="text-lg font-bold font-heading group-hover:tech-gradient-text transition-all">
+          <article className="px-6 pt-5 pb-4 bg-card border border-border rounded-xl transition-shadow duration-300 hover:shadow-lg">
+            <div className="space-y-3">
+              <h3 className="text-lg font-bold font-heading">
                 Monster Call
               </h3>
               <p className="text-muted-foreground leading-relaxed">
@@ -267,10 +265,9 @@ export default function AboutPage() {
           </article>
 
           {/* Jansuko */}
-          <article className="group relative p-6 bg-card border border-border rounded-lg card-hover-lift">
-            <div className="absolute top-0 left-0 w-1 h-full tech-gradient rounded-l-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="relative pl-4 space-y-3">
-              <h3 className="text-lg font-bold font-heading group-hover:tech-gradient-text transition-all">
+          <article className="px-6 pt-5 pb-4 bg-card border border-border rounded-xl transition-shadow duration-300 hover:shadow-lg">
+            <div className="space-y-3">
+              <h3 className="text-lg font-bold font-heading">
                 あいフェス
               </h3>
               <p className="text-muted-foreground leading-relaxed">

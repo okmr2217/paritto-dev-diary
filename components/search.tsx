@@ -22,10 +22,12 @@ const CATEGORY_FILTERS: { value: CategoryFilter; label: string }[] = [
 ];
 
 export function Search({ posts }: SearchProps) {
-  const [activeCategory, setActiveCategory] = useState<CategoryFilter>(ALL_CATEGORY);
+  const [activeCategory, setActiveCategory] =
+    useState<CategoryFilter>(ALL_CATEGORY);
 
   const filteredPosts = posts.filter(
-    (post) => activeCategory === ALL_CATEGORY || post.category === activeCategory,
+    (post) =>
+      activeCategory === ALL_CATEGORY || post.category === activeCategory,
   );
 
   return (
@@ -59,7 +61,7 @@ export function Search({ posts }: SearchProps) {
           </p>
         </div>
       ) : (
-        <div className="grid gap-6">
+        <div className="grid gap-4">
           {filteredPosts.map((post, index) => (
             <div
               key={post.slug}

@@ -8,15 +8,12 @@ type PostCardProps = {
 
 export function PostCard({ post }: PostCardProps) {
   return (
-    <Link href={`/posts/${post.slug}`} className="block group">
-      <article className="relative p-4 border border-border rounded-lg bg-card overflow-hidden transition-all duration-300 card-hover-lift">
-        {/* Accent bar */}
-        <div className="absolute top-0 left-0 w-1 h-full tech-gradient opacity-70 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300" />
-
-        <div className="relative pl-3 space-y-2">
+    <Link href={`/posts/${post.slug}`} className="block">
+      <article className="relative px-6 pt-5 pb-4 border border-border rounded-xl bg-card overflow-hidden transition-shadow duration-300 hover:shadow-lg">
+        <div className="space-y-3">
           {/* Title + Date */}
           <div className="flex items-baseline justify-between gap-3">
-            <h3 className="text-sm font-bold font-heading group-hover:tech-gradient-text transition-all duration-300 flex-1 leading-snug">
+            <h3 className="font-semibold font-heading flex-1 leading-snug">
               {post.title}
             </h3>
             <time className="text-xs text-muted-foreground font-mono whitespace-nowrap opacity-70 shrink-0">
@@ -25,7 +22,7 @@ export function PostCard({ post }: PostCardProps) {
           </div>
 
           {/* Description */}
-          <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">
+          <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
             {post.description}
           </p>
 
