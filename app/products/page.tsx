@@ -64,7 +64,7 @@ export default async function ProductsPage() {
   }));
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pt-8">
       {/* Header with stats */}
       <div className="space-y-4">
         <PageHero

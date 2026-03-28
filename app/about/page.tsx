@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="space-y-12">
+    <div className="space-y-12 pt-8">
       <PageHero
         title="About"
         description="開発者のプロフィール、経歴、技術スタック、制作物などをまとめています。"
