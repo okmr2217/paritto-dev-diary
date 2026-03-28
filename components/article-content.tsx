@@ -33,7 +33,7 @@ export function ArticleContent({ html }: ArticleContentProps) {
   return (
     <div
       ref={contentRef}
-      className="prose prose-sm sm:prose-base dark:prose-invert max-w-none"
+      className="prose prose-sm dark:prose-invert max-w-none"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );

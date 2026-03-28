@@ -158,6 +158,28 @@
   }
 }
 
+/* Prose spacing tightening for article content */
+.prose :where(p):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+  margin-top: 0.85em;
+  margin-bottom: 0.85em;
+}
+.prose :where(h2):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+  margin-top: 1.5em;
+  margin-bottom: 0.6em;
+}
+.prose :where(h3):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+  margin-top: 1.25em;
+  margin-bottom: 0.5em;
+}
+.prose :where(img):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
+.prose :where(ul,ol):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+}
+
 /* Portrait image constraint for article content */
 @media (min-width: 768px) {
   .portrait-image {

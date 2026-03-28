@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
-import { getPostBySlug, getAllPostSlugs } from "@/lib/posts";
+import { getPostBySlug, getAllPostSlugs, CATEGORY_LABELS } from "@/lib/posts";
 import type { Metadata } from "next";
-import { PageHero } from "@/components/page-hero";
 import { ArticleContent } from "@/components/article-content";
 import { StoryImageDownloader } from "@/components/story-image-downloader";
 
@@ -54,11 +53,22 @@ export default async function PostPage({ params }: Props) {
 
   return (
     <div className="space-y-8">
-      <PageHero title={post.title}>
-        <div className="flex flex-col gap-3 mt-1">
-          <time className="text-sm text-muted-foreground/80">{post.date}</time>
+      <header className="space-y-3 pb-6 border-b border-border">
+        <div className="flex items-center gap-3 text-xs text-muted-foreground font-mono">
+          <span className="px-2 py-0.5 rounded bg-muted border border-border">
+            {CATEGORY_LABELS[post.category] ?? post.category}
+          </span>
+          <time>{post.date}</time>
         </div>
-      </PageHero>
+        <h1 className="text-2xl md:text-3xl font-bold font-heading leading-snug">
+          {post.title}
+        </h1>
+        {post.description && (
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            {post.description}
+          </p>
+        )}
+      </header>
       <ArticleContent html={post.content} />
       <div className="flex justify-center pt-4">
         <StoryImageDownloader
