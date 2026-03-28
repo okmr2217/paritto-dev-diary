@@ -8,9 +8,9 @@ import { Menu, X } from "lucide-react";
 import Image from "next/image";
 
 const navLinks = [
-  { href: "/blog", label: "ブログ" },
-  { href: "/about", label: "自己紹介" },
-  { href: "/products", label: "プロダクト" },
+  { href: "/blog", label: "Blog" },
+  { href: "/about", label: "About" },
+  { href: "/products", label: "Works" },
 ];
 
 export function Header() {

@@ -257,13 +257,13 @@ export function ProductsClient({ products }: ProductsClientProps) {
 
       {/* Result count */}
       <p className="text-sm text-muted-foreground">
-        {filteredProducts.length}件のプロダクト
+        {filteredProducts.length}件の制作物
       </p>
 
       {/* Grid */}
       {filteredProducts.length === 0 ? (
         <div className="py-16 text-center text-sm text-muted-foreground">
-          条件に一致するプロダクトはありません
+          条件に一致する制作物はありません
         </div>
       ) : (
         <div
@@ -298,7 +298,7 @@ export function ProductsClient({ products }: ProductsClientProps) {
               <div className="flex items-center gap-3">
                 <div className="flex-1 border-t border-border" />
                 <span className="text-xs text-muted-foreground font-medium whitespace-nowrap">
-                  休止中のプロダクト
+                  休止中の制作物
                 </span>
                 <div className="flex-1 border-t border-border" />
               </div>

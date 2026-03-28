@@ -4,12 +4,13 @@ import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
 import { PageHero } from "@/components/page-hero";
 import { ProductsClient } from "./products-client";
+import { Package } from "lucide-react";
 
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "プロダクト",
-  description: "個人開発したプロダクトの一覧です。",
+  title: "Works",
+  description: "個人開発した制作物の一覧です。",
 };
 
 export default async function ProductsPage() {
@@ -67,13 +68,14 @@ export default async function ProductsPage() {
       {/* Header with stats */}
       <div className="space-y-4">
         <PageHero
-          title="プロダクト"
-          description="個人開発したプロダクトの一覧です。"
+          title="Works"
+          description="個人開発した制作物の一覧です。"
+          icon={Package}
         />
         <div className="flex gap-2 flex-wrap">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground">
             <span className="font-semibold text-foreground">{stats.total}</span>
-            プロダクト
+            制作物
           </span>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-green-100 dark:bg-green-900/30 px-3 py-1 text-xs text-green-700 dark:text-green-400">
             <span className="font-semibold">{stats.released}</span>

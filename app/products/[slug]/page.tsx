@@ -65,7 +65,7 @@ export async function generateMetadata({
   const product = await getProduct(slug);
 
   if (!product) {
-    return { title: "プロダクトが見つかりません" };
+    return { title: "制作物が見つかりません" };
   }
 
   return {
@@ -173,7 +173,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
       {/* 3. Meta Info */}
       {product.releaseDate && (
         <section className="space-y-3">
-          <h2 className="text-xl font-bold font-heading">プロダクト情報</h2>
+          <h2 className="text-xl font-bold font-heading">制作物情報</h2>
           <div className="inline-flex items-center gap-3 rounded-lg bg-muted px-4 py-3 text-sm">
             <span className="text-muted-foreground">リリース日</span>
             <span className="text-foreground font-medium">
@@ -283,7 +283,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
           href="/products"
           className="text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
-          ← プロダクト一覧に戻る
+          ← 制作物一覧に戻る
         </Link>
       </div>
     </div>
