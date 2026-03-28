@@ -57,18 +57,6 @@ export default async function PostPage({ params }: Props) {
       <PageHero title={post.title}>
         <div className="flex flex-col gap-3 mt-1">
           <time className="text-sm text-muted-foreground/80">{post.date}</time>
-          {post.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {post.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full bg-secondary px-2.5 py-0.5 text-xs text-secondary-foreground"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
         </div>
       </PageHero>
       <ArticleContent html={post.content} />

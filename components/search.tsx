@@ -1,47 +1,60 @@
 "use client";
 
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
 import { PostCard } from "@/components/post-card";
 import type { PostMeta } from "@/lib/posts";
-import { Search as SearchIcon } from "lucide-react";
+import type { PostCategory } from "@/lib/post-constants";
+import { CATEGORY_LABELS } from "@/lib/post-constants";
 
 type SearchProps = {
   posts: PostMeta[];
 };
 
-export function Search({ posts }: SearchProps) {
-  const [query, setQuery] = useState("");
+const ALL_CATEGORY = "all" as const;
+type CategoryFilter = PostCategory | typeof ALL_CATEGORY;
 
-  const filteredPosts = posts.filter((post) => {
-    const searchTarget = `${post.title} ${post.description} ${post.tags.join(
-      " ",
-    )}`.toLowerCase();
-    return searchTarget.includes(query.toLowerCase());
-  });
+const CATEGORY_FILTERS: { value: CategoryFilter; label: string }[] = [
+  { value: ALL_CATEGORY, label: "すべて" },
+  { value: "A", label: CATEGORY_LABELS["A"] },
+  { value: "B", label: CATEGORY_LABELS["B"] },
+  { value: "C", label: CATEGORY_LABELS["C"] },
+  { value: "D", label: CATEGORY_LABELS["D"] },
+];
+
+export function Search({ posts }: SearchProps) {
+  const [activeCategory, setActiveCategory] = useState<CategoryFilter>(ALL_CATEGORY);
+
+  const filteredPosts = posts.filter(
+    (post) => activeCategory === ALL_CATEGORY || post.category === activeCategory,
+  );
 
   return (
     <div>
-      <div className="relative mb-8">
-        <SearchIcon className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground transition-colors duration-300" />
-        <Input
-          type="text"
-          placeholder="記事を検索..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="pl-12 h-12 max-w-full md:max-w-lg border-2 focus:border-accent transition-all duration-300 font-sans"
-        />
-        {query && (
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-mono text-muted-foreground">
-            {filteredPosts.length} 件
-          </div>
-        )}
+      {/* Category filter tabs */}
+      <div className="flex flex-wrap gap-2 mb-6">
+        {CATEGORY_FILTERS.map(({ value, label }) => (
+          <button
+            key={value}
+            onClick={() => setActiveCategory(value)}
+            className={`relative px-3 py-1.5 text-xs font-medium font-heading rounded border overflow-hidden transition-all duration-200 ${
+              activeCategory === value
+                ? "border-transparent text-foreground"
+                : "border-border text-muted-foreground hover:text-foreground hover:border-border/80"
+            }`}
+          >
+            {activeCategory === value && (
+              <span className="absolute inset-0 tech-gradient opacity-20" />
+            )}
+            <span className="relative">{label}</span>
+          </button>
+        ))}
       </div>
+
       {filteredPosts.length === 0 ? (
         <div className="flex items-center justify-center py-16">
           <p className="text-muted-foreground font-heading">
-            {query
-              ? "検索結果が見つかりませんでした。"
+            {activeCategory !== ALL_CATEGORY
+              ? "該当する記事が見つかりませんでした。"
               : "記事はまだありません。"}
           </p>
         </div>

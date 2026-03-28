@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { PostMeta } from "@/lib/posts";
+import { CATEGORY_LABELS } from "@/lib/post-constants";
 
 type PostCardProps = {
   post: PostMeta;
@@ -28,21 +29,15 @@ export function PostCard({ post }: PostCardProps) {
             {post.description}
           </p>
 
-          {/* Tags */}
-          {post.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1.5">
-              {post.tags.map((tag, index) => (
-                <span
-                  key={tag}
-                  className="relative px-2 py-0.5 text-xs font-medium font-heading rounded border border-transparent overflow-hidden"
-                  style={{ animationDelay: `${index * 50}ms` }}
-                >
-                  <span className="absolute inset-0 tech-gradient opacity-15 md:opacity-15 md:group-hover/tag:opacity-30 transition-opacity duration-300" />
-                  <span className="relative text-foreground">{tag}</span>
-                </span>
-              ))}
-            </div>
-          )}
+          {/* Category */}
+          <div>
+            <span className="relative px-2 py-0.5 text-xs font-medium font-heading rounded border border-transparent overflow-hidden inline-block">
+              <span className="absolute inset-0 tech-gradient opacity-15" />
+              <span className="relative text-foreground">
+                {CATEGORY_LABELS[post.category]}
+              </span>
+            </span>
+          </div>
         </div>
       </article>
     </Link>
