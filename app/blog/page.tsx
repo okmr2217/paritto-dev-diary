@@ -13,7 +13,7 @@ export default function BlogPage() {
   const posts = getAllPosts();
 
   return (
-    <div className="space-y-8 pt-8">
+    <div className="space-y-8 pt-6">
       <PageHero
         title="Blog"
         description="Next.jsを中心としたモダンな技術スタックによる個人開発について発信しています。"

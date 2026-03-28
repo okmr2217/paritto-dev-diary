@@ -52,7 +52,7 @@ export default async function PostPage({ params }: Props) {
   }
 
   return (
-    <div className="space-y-8 pt-8">
+    <div className="space-y-8 pt-6">
       <header className="space-y-3 pb-6 border-b border-border">
         <div className="flex items-center gap-3 text-xs text-muted-foreground font-mono">
           <span className="px-2 py-0.5 rounded bg-muted border border-border">
