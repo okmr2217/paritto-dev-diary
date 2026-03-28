@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { PROFILE_LINKS } from "@/lib/constants";
-import { Github, Mail, Twitter } from "lucide-react";
+import { Github, Mail, Twitter, User } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 
 export const metadata: Metadata = {
@@ -17,6 +17,7 @@ export default function AboutPage() {
       <PageHero
         title="About"
         description="開発者のプロフィール、経歴、技術スタック、制作物などをまとめています。"
+        icon={User}
       />
 
       {/* Profile */}
@@ -31,7 +32,7 @@ export default function AboutPage() {
           />
         </div>
         <div>
-          <h2 className="text-2xl font-bold font-heading mb-2">Daichi</h2>
+          <h2 className="text-xl font-bold font-heading mb-2">Daichi</h2>
           <p className="text-muted-foreground leading-relaxed">
             2007年生まれ。製造業向けシステム開発と個人開発をしています。
           </p>
@@ -43,7 +44,7 @@ export default function AboutPage() {
 
       {/* What I Do Section */}
       <section className="space-y-6">
-        <h2 className="text-3xl font-bold font-heading tech-gradient-text">
+        <h2 className="text-xl font-bold font-heading tech-gradient-text">
           やっていること
         </h2>
 
@@ -97,7 +98,7 @@ export default function AboutPage() {
 
       {/* Development Flow Section */}
       <section className="space-y-6">
-        <h2 className="text-3xl font-bold font-heading tech-gradient-text">
+        <h2 className="text-xl font-bold font-heading tech-gradient-text">
           開発の流れ
         </h2>
 
@@ -169,7 +170,7 @@ export default function AboutPage() {
 
       {/* Background Section */}
       <section className="space-y-6">
-        <h2 className="text-3xl font-bold font-heading tech-gradient-text">
+        <h2 className="text-xl font-bold font-heading tech-gradient-text">
           これまで
         </h2>
         <div className="max-w-4xl p-6 bg-card border border-border rounded-lg">
@@ -186,7 +187,7 @@ export default function AboutPage() {
       {/* Recent Projects Section */}
       <section className="space-y-8">
         <div>
-          <h2 className="text-3xl font-bold font-heading tech-gradient-text mb-3">
+          <h2 className="text-xl font-bold font-heading tech-gradient-text mb-3">
             最近の抜粋
           </h2>
           <p className="text-muted-foreground">
@@ -199,7 +200,7 @@ export default function AboutPage() {
           <article className="group relative p-6 bg-card border border-border rounded-lg card-hover-lift">
             <div className="absolute top-0 left-0 w-1 h-full tech-gradient rounded-l-lg opacity-0 group-hover:opacity-100 transition-opacity" />
             <div className="relative pl-4 space-y-3">
-              <h3 className="text-2xl font-bold font-heading group-hover:tech-gradient-text transition-all">
+              <h3 className="text-lg font-bold font-heading group-hover:tech-gradient-text transition-all">
                 Yarukoto
               </h3>
               <p className="text-muted-foreground leading-relaxed">
@@ -238,7 +239,7 @@ export default function AboutPage() {
           <article className="group relative p-6 bg-card border border-border rounded-lg card-hover-lift">
             <div className="absolute top-0 left-0 w-1 h-full tech-gradient rounded-l-lg opacity-0 group-hover:opacity-100 transition-opacity" />
             <div className="relative pl-4 space-y-3">
-              <h3 className="text-2xl font-bold font-heading group-hover:tech-gradient-text transition-all">
+              <h3 className="text-lg font-bold font-heading group-hover:tech-gradient-text transition-all">
                 Monster Call
               </h3>
               <p className="text-muted-foreground leading-relaxed">
@@ -269,7 +270,7 @@ export default function AboutPage() {
           <article className="group relative p-6 bg-card border border-border rounded-lg card-hover-lift">
             <div className="absolute top-0 left-0 w-1 h-full tech-gradient rounded-l-lg opacity-0 group-hover:opacity-100 transition-opacity" />
             <div className="relative pl-4 space-y-3">
-              <h3 className="text-2xl font-bold font-heading group-hover:tech-gradient-text transition-all">
+              <h3 className="text-lg font-bold font-heading group-hover:tech-gradient-text transition-all">
                 あいフェス
               </h3>
               <p className="text-muted-foreground leading-relaxed">
@@ -311,7 +312,7 @@ export default function AboutPage() {
 
       {/* Tech Stack Section */}
       <section className="space-y-6">
-        <h2 className="text-3xl font-bold font-heading tech-gradient-text">
+        <h2 className="text-xl font-bold font-heading tech-gradient-text">
           技術スタック
         </h2>
 
@@ -345,7 +346,7 @@ export default function AboutPage() {
 
       {/* Contact Section */}
       <section id="contact" className="space-y-6">
-        <h2 className="text-3xl font-bold font-heading tech-gradient-text">
+        <h2 className="text-xl font-bold font-heading tech-gradient-text">
           連絡先
         </h2>
 

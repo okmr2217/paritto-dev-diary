@@ -53,10 +53,10 @@ export default async function Home() {
             <p className="text-xs font-mono text-muted-foreground tracking-[0.2em] uppercase">
               Personal Dev Blog
             </p>
-            <h1 className="text-4xl md:text-5xl font-bold font-heading tech-gradient-text leading-[1.15]">
+            <h1 className="text-3xl md:text-4xl font-bold font-heading tech-gradient-text leading-[1.15]">
               パリッと開発日記
             </h1>
-            <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-lg">
+            <p className="text-sm md:text-base text-muted-foreground leading-relaxed max-w-lg">
               Next.js を中心としたモダンな技術スタックで、
               個人開発のリアルな試行錯誤を発信しています。
             </p>
@@ -84,16 +84,16 @@ export default async function Home() {
 
             <div className="flex gap-5">
               <div>
-                <p className="text-xl font-bold font-heading tech-gradient-text tabular-nums">
+                <p className="text-lg font-bold font-heading tech-gradient-text tabular-nums">
                   {posts.length}
                 </p>
                 <p className="text-xs text-muted-foreground">記事</p>
               </div>
               <div>
-                <p className="text-xl font-bold font-heading tech-gradient-text tabular-nums">
+                <p className="text-lg font-bold font-heading tech-gradient-text tabular-nums">
                   {productCount}
                 </p>
-                <p className="text-xs text-muted-foreground">プロダクト</p>
+                <p className="text-xs text-muted-foreground">制作物</p>
               </div>
             </div>
           </div>
@@ -112,7 +112,7 @@ export default async function Home() {
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-card border border-border text-sm font-medium rounded-lg hover:border-accent hover:text-accent transition-colors"
             >
               <Package className="w-4 h-4" />
-              プロダクト一覧
+              制作物一覧
             </Link>
           </div>
         </div>
@@ -125,7 +125,7 @@ export default async function Home() {
       <section className="space-y-5">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold font-heading tech-gradient-text">
-            最新プロダクト
+            最新の制作物
           </h2>
           <Link
             href="/products"
