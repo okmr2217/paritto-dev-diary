@@ -8,7 +8,7 @@ import { PageHero } from "@/components/page-hero";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "開発者のプロフィール、経歴、技術スタック、制作物などをまとめています。",
+    "Web Developer Daichi のプロフィールページ。経歴・技術スタック・個人開発プロダクトを紹介しています。",
 };
 
 export default function AboutPage() {

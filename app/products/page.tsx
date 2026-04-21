@@ -10,7 +10,8 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Works",
-  description: "個人開発した制作物の一覧です。",
+  description:
+    "個人開発した Web アプリやツールの一覧。各プロダクトの概要・ステータス・リリース履歴を確認できます。",
 };
 
 export default async function ProductsPage() {

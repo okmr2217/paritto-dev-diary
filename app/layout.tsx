@@ -36,10 +36,12 @@ export const metadata: Metadata = {
     default: "パリッと開発日記",
     template: "%s | パリッと開発日記",
   },
-  description: "フロントエンドを中心とした開発日記ブログです。",
+  description:
+    "Next.js を中心としたモダンな技術スタックで、個人開発のリアルな試行錯誤を発信する Web Developer Daichi の開発日記ブログです。",
   openGraph: {
     title: "パリッと開発日記",
-    description: "フロントエンドを中心とした開発日記ブログです。",
+    description:
+      "Next.js を中心としたモダンな技術スタックで、個人開発のリアルな試行錯誤を発信する Web Developer Daichi の開発日記ブログです。",
     type: "website",
     locale: "ja_JP",
     url: "https://paritto-dev-diary.vercel.app/",
@@ -48,7 +50,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "パリッと開発日記",
-    description: "フロントエンドを中心とした開発日記ブログです。",
+    description:
+      "Next.js を中心としたモダンな技術スタックで、個人開発のリアルな試行錯誤を発信する Web Developer Daichi の開発日記ブログです。",
   },
 };
 

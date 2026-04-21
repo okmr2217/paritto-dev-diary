@@ -6,7 +6,8 @@ import { BookOpen } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Blog",
-  description: "Next.jsを中心としたモダンな技術スタックによる個人開発について発信しています。",
+  description:
+    "Next.js・React・TypeScript などモダンなフロントエンド技術を使った個人開発の記録・技術メモを発信しています。",
 };
 
 export default function BlogPage() {

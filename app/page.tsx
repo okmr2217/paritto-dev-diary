@@ -1,6 +1,15 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { getAllPosts } from "@/lib/posts";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: "パリッと開発日記",
+  },
+  description:
+    "Next.js を中心としたモダンな技術スタックで、個人開発のリアルな試行錯誤を発信する Web Developer Daichi の開発日記ブログです。",
+};
 import { prisma } from "@/lib/prisma";
 import {
   CATEGORY_LABELS,
