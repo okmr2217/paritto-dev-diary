@@ -1,17 +1,18 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+type DeviceType = "PC" | "MOBILE" | "OTHER";
 
 interface ProductImage {
   id: string;
   url: string;
   alt: string | null;
+  deviceType: DeviceType | null;
 }
-
-type Orientation = "unknown" | "pc" | "mobile";
 
 interface ScreenshotGalleryProps {
   images: ProductImage[];
@@ -143,15 +144,12 @@ function Lightbox({ images, index, productName, onClose, onNavigate }: LightboxP
   );
 }
 
-export function ScreenshotGallery({ images, productName }: ScreenshotGalleryProps) {
-  const [orientations, setOrientations] = useState<Record<string, Orientation>>(
-    () => Object.fromEntries(images.map((img) => [img.id, "unknown" as Orientation]))
-  );
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+function isMobileImage(image: ProductImage): boolean {
+  return (image.deviceType ?? "PC") === "MOBILE";
+}
 
-  const handleDetected = useCallback((id: string, isPC: boolean) => {
-    setOrientations((prev) => ({ ...prev, [id]: isPC ? "pc" : "mobile" }));
-  }, []);
+export function ScreenshotGallery({ images, productName }: ScreenshotGalleryProps) {
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   useEffect(() => {
     if (lightboxIndex === null) return;
@@ -174,9 +172,8 @@ export function ScreenshotGallery({ images, productName }: ScreenshotGalleryProp
 
   if (images.length === 0) return null;
 
-  const allClassified = images.every((img) => orientations[img.id] !== "unknown");
-  const pcImages = images.filter((img) => orientations[img.id] === "pc");
-  const mobileImages = images.filter((img) => orientations[img.id] === "mobile");
+  const pcImages = images.filter((img) => !isMobileImage(img));
+  const mobileImages = images.filter((img) => isMobileImage(img));
 
   // Single image: plain display
   if (images.length === 1) {
@@ -212,76 +209,41 @@ export function ScreenshotGallery({ images, productName }: ScreenshotGalleryProp
 
   return (
     <section className="space-y-6">
-      {/* Hidden probes for orientation detection */}
-      <div className="hidden" aria-hidden="true">
-        {images.map((img) => (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            key={img.id}
-            src={img.url}
-            alt=""
-            onLoad={(e) =>
-              handleDetected(
-                img.id,
-                e.currentTarget.naturalWidth >= e.currentTarget.naturalHeight
-              )
-            }
-          />
-        ))}
-      </div>
-
-      {allClassified ? (
-        <>
-          {pcImages.length > 0 && (
-            <div className="space-y-2">
-              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                PC
-              </p>
-              <HorizontalScroll>
-                {pcImages.map((img) => (
-                  <GalleryItem
-                    key={img.id}
-                    image={img}
-                    productName={productName}
-                    variant="pc"
-                    onClick={() => setLightboxIndex(images.indexOf(img))}
-                  />
-                ))}
-              </HorizontalScroll>
-            </div>
-          )}
-          {mobileImages.length > 0 && (
-            <div className="space-y-2">
-              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                モバイル
-              </p>
-              <HorizontalScroll>
-                {mobileImages.map((img) => (
-                  <GalleryItem
-                    key={img.id}
-                    image={img}
-                    productName={productName}
-                    variant="mobile"
-                    onClick={() => setLightboxIndex(images.indexOf(img))}
-                  />
-                ))}
-              </HorizontalScroll>
-            </div>
-          )}
-        </>
-      ) : (
-        // Pre-classification: render all as PC width
-        <HorizontalScroll>
-          {images.map((img) => (
-            <GalleryItem
-              key={img.id}
-              image={img}
-              productName={productName}
-              variant="pc"
-              onClick={() => setLightboxIndex(images.indexOf(img))}
-            />
-          ))}
-        </HorizontalScroll>
+      {pcImages.length > 0 && (
+        <div className="space-y-2">
+          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            PC
+          </p>
+          <HorizontalScroll>
+            {pcImages.map((img) => (
+              <GalleryItem
+                key={img.id}
+                image={img}
+                productName={productName}
+                variant="pc"
+                onClick={() => setLightboxIndex(images.indexOf(img))}
+              />
+            ))}
+          </HorizontalScroll>
+        </div>
+      )}
+      {mobileImages.length > 0 && (
+        <div className="space-y-2">
+          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            モバイル
+          </p>
+          <HorizontalScroll>
+            {mobileImages.map((img) => (
+              <GalleryItem
+                key={img.id}
+                image={img}
+                productName={productName}
+                variant="mobile"
+                onClick={() => setLightboxIndex(images.indexOf(img))}
+              />
+            ))}
+          </HorizontalScroll>
+        </div>
       )}
 
       {lightboxIndex !== null && (
