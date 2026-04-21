@@ -5,7 +5,7 @@ import { ExternalLink, Github, ChevronDown } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getAllPosts } from "@/lib/posts";
 import { PostCard } from "@/components/post-card";
-import { ScreenshotGallery } from "@/components/product/screenshot-gallery";
+import { ProductImageSlider } from "@/components/product/product-image-slider";
 import {
   STATUS_LABELS,
   CATEGORY_LABELS,
@@ -85,37 +85,63 @@ export default async function ProductDetailPage({ params }: PageProps) {
   const allPosts = getAllPosts();
   const relatedPosts = allPosts.filter((post) => post.productSlug === slug);
 
-  return (
-    <div className="space-y-12">
-      {/* 1. Hero Section */}
-      <section className="relative pt-6">
-        <div className="space-y-6 pb-8 border-b border-border">
-          <div className="h-1 w-24 tech-gradient rounded-full" />
+  const hasImages = product.images.length > 0;
 
+  return (
+    <div className="space-y-12 pt-6">
+      {/* Accent bar */}
+      <div className="h-1 w-24 tech-gradient rounded-full" />
+
+      {/* 1. Main section: responsive grid
+          PC: image (2/3) | product info (1/3)
+          Mobile: image → product info (vertical) */}
+      <section
+        className={
+          hasImages
+            ? "grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 md:items-start"
+            : "space-y-6"
+        }
+      >
+        {/* Image slider */}
+        {hasImages && (
+          <div className="md:col-span-2">
+            <ProductImageSlider
+              images={product.images}
+              productName={product.name}
+            />
+          </div>
+        )}
+
+        {/* Product info */}
+        <div
+          className={`space-y-5 ${hasImages ? "md:col-span-1" : ""} pb-8 border-b border-border`}
+        >
           {/* Title + Badges */}
-          <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-3xl md:text-4xl font-bold font-heading tech-gradient-text">
+          <div className="space-y-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <span
+                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${CATEGORY_COLORS[product.category] ?? "bg-gray-100 text-gray-700"}`}
+              >
+                {CATEGORY_LABELS[product.category] ?? product.category}
+              </span>
+              <span
+                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_COLORS[product.status] ?? "bg-gray-100 text-gray-700"}`}
+              >
+                {STATUS_LABELS[product.status] ?? product.status}
+              </span>
+            </div>
+            <h1 className="text-2xl md:text-3xl font-bold font-heading tech-gradient-text leading-tight">
               {product.name}
             </h1>
-            <span
-              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${CATEGORY_COLORS[product.category] ?? "bg-gray-100 text-gray-700"}`}
-            >
-              {CATEGORY_LABELS[product.category] ?? product.category}
-            </span>
-            <span
-              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_COLORS[product.status] ?? "bg-gray-100 text-gray-700"}`}
-            >
-              {STATUS_LABELS[product.status] ?? product.status}
-            </span>
           </div>
 
           {/* Description */}
           <div className="space-y-2">
-            <p className="text-lg font-semibold text-foreground leading-relaxed">
+            <p className="text-base font-semibold text-foreground leading-relaxed">
               {product.description}
             </p>
             {product.longDescription && (
-              <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
+              <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
                 {product.longDescription}
               </p>
             )}
@@ -162,40 +188,20 @@ export default async function ProductDetailPage({ params }: PageProps) {
               ))}
             </div>
           )}
+
+          {/* Release date (inside info panel) */}
+          {product.releaseDate && (
+            <div className="inline-flex items-center gap-3 rounded-lg bg-muted px-4 py-3 text-sm">
+              <span className="text-muted-foreground">リリース日</span>
+              <span className="text-foreground font-medium">
+                {new Date(product.releaseDate).toLocaleDateString("ja-JP")}
+              </span>
+            </div>
+          )}
         </div>
       </section>
 
-      {/* 2. Screenshot Gallery */}
-      {product.images.length > 0 && (
-        <ScreenshotGallery images={product.images} productName={product.name} />
-      )}
-
-      {/* 3. Meta Info */}
-      {product.releaseDate && (
-        <section className="space-y-3">
-          <h2 className="text-xl font-bold font-heading">制作物情報</h2>
-          <div className="inline-flex items-center gap-3 rounded-lg bg-muted px-4 py-3 text-sm">
-            <span className="text-muted-foreground">リリース日</span>
-            <span className="text-foreground font-medium">
-              {new Date(product.releaseDate).toLocaleDateString("ja-JP")}
-            </span>
-          </div>
-        </section>
-      )}
-
-      {/* 4. Related Posts */}
-      {relatedPosts.length > 0 && (
-        <section className="space-y-4">
-          <h2 className="text-xl font-bold font-heading">関連記事</h2>
-          <div className="space-y-3">
-            {relatedPosts.map((post) => (
-              <PostCard key={post.slug} post={post} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* 5. Release Notes (Accordion) */}
+      {/* 2. Release Notes (Accordion) */}
       {product.releases.length > 0 && (
         <section className="space-y-4">
           <h2 className="text-xl font-bold font-heading">リリースノート</h2>
@@ -237,17 +243,27 @@ export default async function ProductDetailPage({ params }: PageProps) {
         </section>
       )}
 
-      {/* 6. Status History */}
+      {/* 3. Related Posts */}
+      {relatedPosts.length > 0 && (
+        <section className="space-y-4">
+          <h2 className="text-xl font-bold font-heading">関連記事</h2>
+          <div className="space-y-3">
+            {relatedPosts.map((post) => (
+              <PostCard key={post.slug} post={post} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* 4. Status History */}
       {product.statusHistory.length > 0 && (
         <section className="space-y-4">
           <h2 className="text-xl font-bold font-heading">ステータス履歴</h2>
           <div className="relative pl-6 space-y-6">
-            {/* Vertical line */}
             <div className="absolute left-2 top-0 bottom-0 w-px bg-border" />
 
             {product.statusHistory.map((entry) => (
               <div key={entry.id} className="relative">
-                {/* Dot */}
                 <div
                   className={`absolute -left-4 top-1 w-2.5 h-2.5 rounded-full ${STATUS_DOT_COLORS[entry.to] ?? "bg-gray-400"}`}
                 />
@@ -277,7 +293,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
         </section>
       )}
 
-      {/* 7. Back Link */}
+      {/* Back Link */}
       <div>
         <Link
           href="/products"
