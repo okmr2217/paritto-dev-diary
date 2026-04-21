@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(npx tsc:*)",
-      "Bash(find /c/Development/Production/パリッと開発日記/paritto-dev-diary -type f -not -path */node_modules/* -not -path */.next/* -not -path */.git/*)"
+      "Bash(find /c/Development/Production/パリッと開発日記/paritto-dev-diary -type f -not -path */node_modules/* -not -path */.next/* -not -path */.git/*)",
+      "Bash(grep -n \"generateStaticParams\\\\|getStaticProps\\\\|getStaticPaths\\\\|dynamicParams\\\\|export const dynamic\\\\|export const revalidate\\\\|''use client''\" app/page.tsx app/about/page.tsx app/blog/page.tsx app/posts/[slug]/page.tsx app/products/page.tsx app/products/[slug]/page.tsx app/products/products-client.tsx)"
     ]
   }
 }
