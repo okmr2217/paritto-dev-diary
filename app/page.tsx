@@ -2,14 +2,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { getAllPosts } from "@/lib/posts";
-
-export const metadata: Metadata = {
-  title: {
-    absolute: "パリッと開発日記",
-  },
-  description:
-    "Next.js を中心としたモダンな技術スタックで、個人開発のリアルな試行錯誤を発信する Web Developer Daichi の開発日記ブログです。",
-};
 import { prisma } from "@/lib/prisma";
 import {
   CATEGORY_LABELS,
@@ -20,6 +12,14 @@ import {
 } from "@/lib/product-constants";
 import { PostCard } from "@/components/post-card";
 import { ArrowRight, User, Package } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: "パリッと開発日記",
+  },
+  description:
+    "Next.js を中心としたモダンな技術スタックで、個人開発のリアルな試行錯誤を発信する Web Developer Daichi の開発日記ブログです。",
+};
 
 const RELEASE_TYPE_COLORS: Record<string, string> = {
   MAJOR: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
