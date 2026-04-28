@@ -143,7 +143,7 @@ export function StoryImageDownloader({
       let y = PAD + 20;
 
       // --- Logo icon + Site name (horizontal) ---
-      const logoImg = await loadImage("/icons/android-icon-192x192.png");
+      const logoImg = await loadImage("/icon-192.png");
       const logoSize = 52;
       const siteNameText = "パリッと開発日記";
       ctx.font = "600 30px 'IBM Plex Sans JP', 'Noto Sans JP', sans-serif";
