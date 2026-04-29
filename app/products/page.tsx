@@ -24,17 +24,13 @@ export default async function ProductsPage() {
       description: true,
       category: true,
       status: true,
-      stacks: true,
-      images: {
-        where: { isThumbnail: true },
-        take: 1,
-        select: { url: true, alt: true, isThumbnail: true },
-      },
+      iconUrl: true,
+      themeColor: true,
       releases: {
         where: { isDraft: false },
         orderBy: { releaseDate: "desc" },
         take: 1,
-        select: { releaseDate: true },
+        select: { version: true, releaseDate: true },
       },
     },
   });
@@ -55,9 +51,10 @@ export default async function ProductsPage() {
     description: p.description,
     category: p.category as string,
     status: p.status as string,
-    stacks: p.stacks,
-    lastUpdated: p.releases[0]?.releaseDate.toISOString(),
-    thumbnail: p.images[0] ?? null,
+    iconUrl: p.iconUrl ?? null,
+    themeColor: p.themeColor ?? null,
+    latestVersion: p.releases[0]?.version ?? null,
+    latestVersionDate: p.releases[0]?.releaseDate.toISOString() ?? null,
   }));
 
   return (
@@ -72,7 +69,7 @@ export default async function ProductsPage() {
         <div className="flex gap-2 flex-wrap">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground">
             <span className="font-semibold text-foreground">{stats.total}</span>
-            制作物
+            プロダクト
           </span>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-green-100 dark:bg-green-900/30 px-3 py-1 text-xs text-green-700 dark:text-green-400">
             <span className="font-semibold">{stats.released}</span>
@@ -87,10 +84,12 @@ export default async function ProductsPage() {
         </div>
       </div>
 
-      {/* Filter, sort, and grid (client) */}
-      <Suspense fallback={null}>
-        <ProductsClient products={serializedProducts} />
-      </Suspense>
+      {/* Filter and grid (client) — break out of padding for wider layout */}
+      <div className="-mx-4 sm:-mx-6 px-4 sm:px-6">
+        <Suspense fallback={null}>
+          <ProductsClient products={serializedProducts} />
+        </Suspense>
+      </div>
 
       {/* Past works archive */}
       <Link

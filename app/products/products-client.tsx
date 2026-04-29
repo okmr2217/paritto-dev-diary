@@ -3,13 +3,22 @@
 import { useState, useMemo, useTransition, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { LayoutGrid, List } from "lucide-react";
+import { LayoutGrid, List, Smartphone, Globe, Plug, Package } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
 import {
   STATUS_LABELS,
   CATEGORY_LABELS,
   STATUS_COLORS,
+  CATEGORY_COLORS,
 } from "@/lib/product-constants";
+
+const CATEGORY_ICONS: Record<string, React.ReactNode> = {
+  APP: <Smartphone className="w-5 h-5" />,
+  MCP: <Plug className="w-5 h-5" />,
+  SITE: <Globe className="w-5 h-5" />,
+  EXTENSION: <Package className="w-5 h-5" />,
+  LIBRARY: <Package className="w-5 h-5" />,
+};
 
 interface Product {
   slug: string;
@@ -17,9 +26,10 @@ interface Product {
   description: string;
   category: string;
   status: string;
-  stacks: string[];
-  lastUpdated: string | null;
-  thumbnail: { url: string; alt: string | null; isThumbnail: boolean } | null;
+  iconUrl: string | null;
+  themeColor: string | null;
+  latestVersion: string | null;
+  latestVersionDate: string | null;
 }
 
 interface ProductsClientProps {
@@ -34,18 +44,11 @@ const VALID_STATUSES = [
   "MAINTENANCE",
   "PAUSED",
 ] as const;
-const VALID_SORTS = ["updated_desc", "name_asc"] as const;
 const VALID_VIEWS = ["grid", "table"] as const;
 
 type Category = (typeof VALID_CATEGORIES)[number];
 type Status = (typeof VALID_STATUSES)[number];
-type Sort = (typeof VALID_SORTS)[number];
 type ViewMode = (typeof VALID_VIEWS)[number];
-
-const SORT_LABELS: Record<Sort, string> = {
-  updated_desc: "最終更新日（新しい順）",
-  name_asc: "名前順",
-};
 
 const CATEGORY_FILTERS: { label: string; value: Category | null }[] = [
   { label: "すべて", value: null },
@@ -75,12 +78,6 @@ function parseStatus(value: string | null): Status | null {
     : null;
 }
 
-function parseSort(value: string | null): Sort {
-  return (VALID_SORTS as readonly string[]).includes(value ?? "")
-    ? (value as Sort)
-    : "updated_desc";
-}
-
 function parseView(value: string | null): ViewMode {
   return value === "table" ? "table" : "grid";
 }
@@ -88,13 +85,11 @@ function parseView(value: string | null): ViewMode {
 function buildQuery(
   category: Category | null,
   status: Status | null,
-  sort: Sort,
   view: ViewMode,
 ): string {
   const params = new URLSearchParams();
   if (category) params.set("category", category);
   if (status) params.set("status", status);
-  if (sort !== "updated_desc") params.set("sort", sort);
   if (view !== "grid") params.set("view", view);
   return params.toString();
 }
@@ -108,9 +103,6 @@ interface TableRowProps {
 }
 
 function TableRow({ product }: TableRowProps) {
-  const visibleStacks = product.stacks.slice(0, 3);
-  const remaining = product.stacks.length - visibleStacks.length;
-
   return (
     <tr
       className="border-b border-border hover:bg-muted/50 transition-colors cursor-pointer group"
@@ -118,15 +110,54 @@ function TableRow({ product }: TableRowProps) {
         window.location.href = `/products/${product.slug}`;
       }}
     >
+      {/* Icon + Project name + description */}
       <td className="px-4 py-3">
-        <Link
-          href={`/products/${product.slug}`}
-          className="font-medium text-foreground group-hover:text-accent transition-colors"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {product.name}
-        </Link>
+        <div className="flex items-center gap-3">
+          <div
+            className="flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center overflow-hidden"
+            style={{
+              backgroundColor: product.themeColor
+                ? `${product.themeColor}20`
+                : "var(--color-muted)",
+            }}
+          >
+            {product.iconUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={product.iconUrl} alt={product.name} className="w-6 h-6 object-contain" />
+            ) : (
+              <span
+                className="opacity-60"
+                style={{ color: product.themeColor ?? undefined }}
+              >
+                {CATEGORY_ICONS[product.category] ?? <Package className="w-5 h-5" />}
+              </span>
+            )}
+          </div>
+          <div className="min-w-0">
+            <Link
+              href={`/products/${product.slug}`}
+              className="font-medium text-foreground group-hover:text-accent transition-colors block"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {product.name}
+            </Link>
+            {product.description && (
+              <p className="text-xs text-muted-foreground truncate max-w-xs mt-0.5">
+                {product.description}
+              </p>
+            )}
+          </div>
+        </div>
       </td>
+      {/* Category */}
+      <td className="px-4 py-3">
+        <span
+          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${CATEGORY_COLORS[product.category] ?? "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400"}`}
+        >
+          {CATEGORY_LABELS[product.category] ?? product.category}
+        </span>
+      </td>
+      {/* Status */}
       <td className="px-4 py-3">
         <span
           className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_COLORS[product.status] ?? "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400"}`}
@@ -134,25 +165,18 @@ function TableRow({ product }: TableRowProps) {
           {STATUS_LABELS[product.status] ?? product.status}
         </span>
       </td>
-      <td className="px-4 py-3 text-sm text-muted-foreground">
-        {product.lastUpdated ? formatDate(product.lastUpdated) : "—"}
-      </td>
+      {/* Latest version + date */}
       <td className="px-4 py-3">
-        <div className="flex gap-1.5 flex-wrap">
-          {visibleStacks.map((stack) => (
-            <span
-              key={stack}
-              className="inline-flex items-center rounded px-1.5 py-0.5 text-xs bg-muted text-muted-foreground font-mono"
-            >
-              {stack}
-            </span>
-          ))}
-          {remaining > 0 && (
-            <span className="inline-flex items-center rounded px-1.5 py-0.5 text-xs bg-muted text-muted-foreground font-mono">
-              他{remaining}件
-            </span>
-          )}
-        </div>
+        {product.latestVersion ? (
+          <div className="space-y-0.5">
+            <span className="text-sm font-mono text-foreground">{product.latestVersion}</span>
+            {product.latestVersionDate && (
+              <p className="text-xs text-muted-foreground">{formatDate(product.latestVersionDate)}</p>
+            )}
+          </div>
+        ) : (
+          <span className="text-sm text-muted-foreground">—</span>
+        )}
       </td>
     </tr>
   );
@@ -169,9 +193,6 @@ export function ProductsClient({ products }: ProductsClientProps) {
   const [activeStatus, setActiveStatus] = useState<Status | null>(
     parseStatus(searchParams.get("status")),
   );
-  const [activeSort, setActiveSort] = useState<Sort>(
-    parseSort(searchParams.get("sort")),
-  );
   const [viewMode, setViewMode] = useState<ViewMode>(
     parseView(searchParams.get("view")),
   );
@@ -179,17 +200,15 @@ export function ProductsClient({ products }: ProductsClientProps) {
   useEffect(() => {
     setActiveCategory(parseCategory(searchParams.get("category")));
     setActiveStatus(parseStatus(searchParams.get("status")));
-    setActiveSort(parseSort(searchParams.get("sort")));
     setViewMode(parseView(searchParams.get("view")));
   }, [searchParams]);
 
   const pushUrl = (
     category: Category | null,
     status: Status | null,
-    sort: Sort,
     view: ViewMode,
   ) => {
-    const query = buildQuery(category, status, sort, view);
+    const query = buildQuery(category, status, view);
     startTransition(() => {
       router.replace(query ? `/products?${query}` : "/products", {
         scroll: false,
@@ -199,50 +218,35 @@ export function ProductsClient({ products }: ProductsClientProps) {
 
   const handleCategoryChange = (value: Category | null) => {
     setActiveCategory(value);
-    pushUrl(value, activeStatus, activeSort, viewMode);
+    pushUrl(value, activeStatus, viewMode);
   };
 
   const handleStatusChange = (value: Status | null) => {
     setActiveStatus(value);
-    pushUrl(activeCategory, value, activeSort, viewMode);
-  };
-
-  const handleSortChange = (value: Sort) => {
-    setActiveSort(value);
-    pushUrl(activeCategory, activeStatus, value, viewMode);
+    pushUrl(activeCategory, value, viewMode);
   };
 
   const handleViewChange = (value: ViewMode) => {
     setViewMode(value);
-    pushUrl(activeCategory, activeStatus, activeSort, value);
+    pushUrl(activeCategory, activeStatus, value);
   };
 
   const filteredProducts = useMemo(() => {
     let result = [...products];
-
     if (activeCategory) {
       result = result.filter((p) => p.category === activeCategory);
     }
     if (activeStatus) {
       result = result.filter((p) => p.status === activeStatus);
     }
-
     return result;
   }, [products, activeCategory, activeStatus]);
 
-  const hasStatusFilter = activeStatus !== null;
-  const activeProducts = hasStatusFilter
-    ? filteredProducts
-    : filteredProducts.filter((p) => p.status !== "PAUSED");
-  const pausedProducts = hasStatusFilter
-    ? []
-    : filteredProducts.filter((p) => p.status === "PAUSED");
-
-  const gridKey = `${activeCategory ?? "all"}-${activeStatus ?? "all"}-${activeSort}-${viewMode}`;
+  const gridKey = `${activeCategory ?? "all"}-${activeStatus ?? "all"}-${viewMode}`;
 
   return (
     <div className="space-y-6">
-      {/* Filter & Sort Bar */}
+      {/* Filter Bar */}
       <div className="space-y-2">
         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
           {/* Category tabs */}
@@ -265,47 +269,30 @@ export function ProductsClient({ products }: ProductsClientProps) {
             })}
           </nav>
 
-          <div className="flex items-center gap-2">
-            {/* Sort */}
-            <select
-              value={activeSort}
-              onChange={(e) => handleSortChange(e.target.value as Sort)}
-              className="rounded-lg border border-border bg-background px-2.5 py-1 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-ring w-full sm:w-auto cursor-pointer"
+          {/* View mode toggle (PC only) */}
+          <div className="hidden md:flex items-center gap-1 border border-border rounded-lg p-0.5 self-start sm:self-auto">
+            <button
+              onClick={() => handleViewChange("grid")}
+              className={`p-1.5 rounded transition-colors ${
+                viewMode === "grid"
+                  ? "bg-foreground text-background"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+              aria-label="カード表示"
             >
-              {(Object.entries(SORT_LABELS) as [Sort, string][]).map(
-                ([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ),
-              )}
-            </select>
-
-            {/* View mode toggle (PC only) */}
-            <div className="hidden md:flex items-center gap-1 border border-border rounded-lg p-0.5">
-              <button
-                onClick={() => handleViewChange("grid")}
-                className={`p-1.5 rounded transition-colors ${
-                  viewMode === "grid"
-                    ? "bg-foreground text-background"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-                aria-label="カード表示"
-              >
-                <LayoutGrid size={14} />
-              </button>
-              <button
-                onClick={() => handleViewChange("table")}
-                className={`p-1.5 rounded transition-colors ${
-                  viewMode === "table"
-                    ? "bg-foreground text-background"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-                aria-label="テーブル表示"
-              >
-                <List size={14} />
-              </button>
-            </div>
+              <LayoutGrid size={14} />
+            </button>
+            <button
+              onClick={() => handleViewChange("table")}
+              className={`p-1.5 rounded transition-colors ${
+                viewMode === "table"
+                  ? "bg-foreground text-background"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+              aria-label="テーブル表示"
+            >
+              <List size={14} />
+            </button>
           </div>
         </div>
 
@@ -332,114 +319,68 @@ export function ProductsClient({ products }: ProductsClientProps) {
 
       {/* Result count */}
       <p className="text-sm text-muted-foreground">
-        {filteredProducts.length}件の制作物
+        {filteredProducts.length}件のプロダクト
       </p>
 
       {/* Grid / Table */}
       {filteredProducts.length === 0 ? (
         <div className="py-16 text-center text-sm text-muted-foreground">
-          条件に一致する制作物はありません
+          条件に一致するプロダクトはありません
         </div>
       ) : (
         <div
           key={gridKey}
-          className={`space-y-8 animate-in fade-in duration-200 transition-opacity ${
+          className={`animate-in fade-in duration-200 transition-opacity ${
             isPending ? "opacity-50" : "opacity-100"
           }`}
         >
-          {/* Table view (PC only — mobile always uses card) */}
+          {/* Table view (PC only) */}
           {viewMode === "table" ? (
             <div className="hidden md:block rounded-lg border border-border overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border bg-muted/50">
                     <th className="px-4 py-2.5 text-left text-xs font-medium text-muted-foreground">
-                      プロダクト名
+                      プロジェクト
+                    </th>
+                    <th className="px-4 py-2.5 text-left text-xs font-medium text-muted-foreground">
+                      カテゴリ
                     </th>
                     <th className="px-4 py-2.5 text-left text-xs font-medium text-muted-foreground">
                       ステータス
                     </th>
                     <th className="px-4 py-2.5 text-left text-xs font-medium text-muted-foreground">
-                      最終更新
-                    </th>
-                    <th className="px-4 py-2.5 text-left text-xs font-medium text-muted-foreground">
-                      リリース日
-                    </th>
-                    <th className="px-4 py-2.5 text-left text-xs font-medium text-muted-foreground">
-                      技術スタック
+                      最新バージョン
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {activeProducts.map((product) => (
+                  {filteredProducts.map((product) => (
                     <TableRow key={product.slug} product={product} />
                   ))}
-                  {pausedProducts.length > 0 && (
-                    <>
-                      <tr>
-                        <td colSpan={5} className="px-4 py-2 text-center">
-                          <span className="text-xs text-muted-foreground font-medium">
-                            休止中の制作物
-                          </span>
-                        </td>
-                      </tr>
-                      {pausedProducts.map((product) => (
-                        <TableRow key={product.slug} product={product} />
-                      ))}
-                    </>
-                  )}
                 </tbody>
               </table>
             </div>
           ) : null}
 
-          {/* Card view (always shown on mobile, shown on PC when viewMode=grid) */}
+          {/* Card view (always on mobile, on PC when viewMode=grid) */}
           <div className={viewMode === "table" ? "md:hidden" : ""}>
-            {activeProducts.length > 0 && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-6">
-                {activeProducts.map((product) => (
-                  <ProductCard
-                    key={product.slug}
-                    slug={product.slug}
-                    name={product.name}
-                    description={product.description}
-                    category={product.category}
-                    status={product.status}
-                    stacks={product.stacks}
-                    lastUpdated={product.lastUpdated}
-                    thumbnail={product.thumbnail}
-                  />
-                ))}
-              </div>
-            )}
-
-            {pausedProducts.length > 0 && (
-              <div className="space-y-4 mt-8">
-                <div className="flex items-center gap-3">
-                  <div className="flex-1 border-t border-border" />
-                  <span className="text-xs text-muted-foreground font-medium whitespace-nowrap">
-                    休止中の制作物
-                  </span>
-                  <div className="flex-1 border-t border-border" />
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 opacity-60">
-                  {pausedProducts.map((product) => (
-                    <ProductCard
-                      key={product.slug}
-                      slug={product.slug}
-                      name={product.name}
-                      description={product.description}
-                      category={product.category}
-                      status={product.status}
-                      stacks={product.stacks}
-                      lastUpdated={product.lastUpdated}
-                      thumbnail={product.thumbnail}
-                      compact
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {filteredProducts.map((product) => (
+                <ProductCard
+                  key={product.slug}
+                  slug={product.slug}
+                  name={product.name}
+                  description={product.description}
+                  category={product.category}
+                  status={product.status}
+                  latestVersion={product.latestVersion}
+                  latestVersionDate={product.latestVersionDate}
+                  iconUrl={product.iconUrl}
+                  themeColor={product.themeColor}
+                />
+              ))}
+            </div>
           </div>
         </div>
       )}

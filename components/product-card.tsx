@@ -1,19 +1,11 @@
-import Image from "next/image";
 import Link from "next/link";
-import { Smartphone, Globe, Plug } from "lucide-react";
+import { Smartphone, Globe, Plug, Package } from "lucide-react";
 import {
   STATUS_LABELS,
   CATEGORY_LABELS,
   STATUS_COLORS,
   CATEGORY_COLORS,
-  CATEGORY_PLACEHOLDER_COLORS,
 } from "@/lib/product-constants";
-
-interface ProductImage {
-  url: string;
-  alt: string | null;
-  isThumbnail: boolean;
-}
 
 interface ProductCardProps {
   slug: string;
@@ -21,27 +13,19 @@ interface ProductCardProps {
   description: string | null;
   category: string;
   status: string;
-  stacks: string[];
-  thumbnail: ProductImage | null;
-  lastUpdated?: string | null;
+  iconUrl: string | null;
+  themeColor: string | null;
+  latestVersion?: string | null;
+  latestVersionDate?: string | null;
   compact?: boolean;
 }
 
-function formatRelative(iso: string): string {
-  const diffDays = Math.floor(
-    (Date.now() - new Date(iso).getTime()) / 86400000,
-  );
-  if (diffDays === 0) return "今日";
-  if (diffDays < 7) return `${diffDays}日前`;
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)}週間前`;
-  if (diffDays < 365) return `${Math.floor(diffDays / 30)}ヶ月前`;
-  return `${Math.floor(diffDays / 365)}年前`;
-}
-
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
-  APP: <Smartphone className="w-7 h-7 opacity-50" />,
-  MCP: <Plug className="w-7 h-7 opacity-50" />,
-  SITE: <Globe className="w-7 h-7 opacity-50" />,
+  APP: <Smartphone className="w-6 h-6" />,
+  MCP: <Plug className="w-6 h-6" />,
+  SITE: <Globe className="w-6 h-6" />,
+  EXTENSION: <Package className="w-6 h-6" />,
+  LIBRARY: <Package className="w-6 h-6" />,
 };
 
 export function ProductCard({
@@ -50,101 +34,92 @@ export function ProductCard({
   description,
   category,
   status,
-  stacks,
-  thumbnail,
-  lastUpdated,
+  iconUrl,
+  themeColor,
+  latestVersion,
+  latestVersionDate,
   compact = false,
 }: ProductCardProps) {
-  const visibleStacks = stacks.slice(0, 2);
-  const remainingCount = stacks.length - visibleStacks.length;
-  const initial = name.charAt(0).toUpperCase();
-  const placeholderColors =
-    CATEGORY_PLACEHOLDER_COLORS[category] ?? "bg-muted text-muted-foreground";
 
   return (
     <Link
       href={`/products/${slug}`}
       className="group block rounded-xl border border-border bg-card overflow-hidden hover:shadow-lg transition-shadow duration-300"
+      style={
+        themeColor
+          ? { borderLeftColor: themeColor, borderLeftWidth: "3px" }
+          : undefined
+      }
     >
-      {/* Thumbnail (hidden in compact mode) */}
-      {!compact && (
-        <div className="relative aspect-video overflow-hidden bg-muted">
-          {thumbnail ? (
-            <Image
-              src={thumbnail.url}
-              alt={thumbnail.alt ?? name}
-              fill
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            />
-          ) : (
-            <div
-              className={`flex h-full flex-col items-center justify-center gap-2 ${placeholderColors}`}
-            >
-              <span className="text-4xl font-bold leading-none font-heading">
-                {initial}
+      <div className={`${compact ? "p-3" : "p-4"} space-y-2.5`}>
+        {/* Icon + Badges */}
+        <div className="flex items-start gap-3">
+          {/* Product icon */}
+          <div
+            className="flex-shrink-0 w-11 h-11 rounded-lg flex items-center justify-center overflow-hidden"
+            style={{
+              backgroundColor: themeColor
+                ? `${themeColor}20`
+                : "var(--color-muted)",
+            }}
+          >
+            {iconUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={iconUrl}
+                alt={name}
+                className="w-8 h-8 object-contain"
+              />
+            ) : (
+              <span
+                className="opacity-60"
+                style={{ color: themeColor ?? undefined }}
+              >
+                {CATEGORY_ICONS[category] ?? <Package className="w-6 h-6" />}
               </span>
-              {CATEGORY_ICONS[category]}
-            </div>
-          )}
-        </div>
-      )}
+            )}
+          </div>
 
-      {/* Content */}
-      <div className={`${compact ? "p-3" : "p-4"} space-y-2`}>
-        {/* Badges */}
-        <div className="flex gap-2 flex-wrap">
-          <span
-            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${CATEGORY_COLORS[category] ?? "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400"}`}
-          >
-            {CATEGORY_LABELS[category] ?? category}
-          </span>
-          <span
-            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_COLORS[status] ?? "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400"}`}
-          >
-            {STATUS_LABELS[status] ?? status}
-          </span>
+          {/* Badges */}
+          <div className="flex-1 flex gap-1.5 flex-wrap pt-0.5 min-w-0">
+            <span
+              className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${CATEGORY_COLORS[category] ?? "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400"}`}
+            >
+              {CATEGORY_LABELS[category] ?? category}
+            </span>
+            <span
+              className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[status] ?? "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400"}`}
+            >
+              {STATUS_LABELS[status] ?? status}
+            </span>
+          </div>
         </div>
 
         {/* Name */}
         <h2
-          className={`font-semibold font-heading text-foreground leading-snug ${compact ? "text-sm" : ""}`}
+          className={`font-semibold font-heading text-foreground leading-snug ${compact ? "text-sm" : "text-base"}`}
         >
           {name}
         </h2>
 
-        {/* Description (hidden in compact mode) */}
+        {/* Description */}
         {!compact && description && (
           <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
             {description}
           </p>
         )}
 
-        {/* Stacks */}
-        {!compact && stacks.length > 0 && (
-          <div className="flex gap-1.5 flex-wrap">
-            {visibleStacks.map((stack) => (
-              <span
-                key={stack}
-                className="inline-flex items-center rounded px-1.5 py-0.5 text-xs bg-muted text-muted-foreground font-mono"
-              >
-                {stack}
-              </span>
-            ))}
-            {remainingCount > 0 && (
+        {/* Latest version */}
+        {!compact && (latestVersion || latestVersionDate) && (
+          <div className="pt-0.5 border-t border-border/50 flex items-center gap-2 pt-1.5">
+            {latestVersion && (
               <span className="inline-flex items-center rounded px-1.5 py-0.5 text-xs bg-muted text-muted-foreground font-mono">
-                +{remainingCount}
+                {latestVersion}
               </span>
             )}
-          </div>
-        )}
-
-        {/* Dates */}
-        {!compact && lastUpdated && (
-          <div className="flex gap-3 flex-wrap pt-0.5 border-t border-border/50">
-            {lastUpdated && (
-              <span className="text-xs text-muted-foreground pt-1">
-                最終更新: {formatRelative(lastUpdated)}
+            {latestVersionDate && (
+              <span className="text-xs text-muted-foreground">
+                {new Date(latestVersionDate).toLocaleDateString("ja-JP")}
               </span>
             )}
           </div>
