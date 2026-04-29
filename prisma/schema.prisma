@@ -68,14 +68,14 @@ model Product {
   longDescription String?
   category        ProductCategory
   status          ProductStatus   @default(IDEA)
-  releaseDate     DateTime?
   stacks          String[]
   repositoryUrl   String?
   productUrl      String?
   note            String?
+  iconUrl         String?
+  themeColor      String?
   sortOrder       Int             @default(0)
   isPublic        Boolean         @default(false)
-  isFeatured      Boolean         @default(false)
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
 
@@ -89,6 +89,8 @@ enum ProductCategory {
   APP
   MCP
   SITE
+  EXTENSION
+  LIBRARY
 }
 
 enum ProductStatus {
@@ -99,21 +101,23 @@ enum ProductStatus {
   PAUSED
 }
 
+model ProductImage {
+  id          String     @id @default(cuid())
+  url         String
+  alt         String?
+  isThumbnail Boolean    @default(false)
+  sortOrder   Int        @default(0)
+  deviceType  DeviceType @default(PC)
+  productId   String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  product     Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
 enum DeviceType {
   PC
   MOBILE
   OTHER
-}
-
-model ProductImage {
-  id          String      @id @default(cuid())
-  url         String
-  alt         String?
-  isThumbnail Boolean     @default(false)
-  sortOrder   Int         @default(0)
-  deviceType  DeviceType?
-  productId   String
-  product     Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model Release {

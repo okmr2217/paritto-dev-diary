@@ -23,19 +23,13 @@ interface ProductCardProps {
   status: string;
   stacks: string[];
   thumbnail: ProductImage | null;
-  releaseDate?: string | null;
   lastUpdated?: string | null;
   compact?: boolean;
 }
 
-function formatDate(iso: string): string {
-  const d = new Date(iso);
-  return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}`;
-}
-
 function formatRelative(iso: string): string {
   const diffDays = Math.floor(
-    (Date.now() - new Date(iso).getTime()) / 86400000
+    (Date.now() - new Date(iso).getTime()) / 86400000,
   );
   if (diffDays === 0) return "今日";
   if (diffDays < 7) return `${diffDays}日前`;
@@ -58,7 +52,6 @@ export function ProductCard({
   status,
   stacks,
   thumbnail,
-  releaseDate,
   lastUpdated,
   compact = false,
 }: ProductCardProps) {
@@ -66,8 +59,7 @@ export function ProductCard({
   const remainingCount = stacks.length - visibleStacks.length;
   const initial = name.charAt(0).toUpperCase();
   const placeholderColors =
-    CATEGORY_PLACEHOLDER_COLORS[category] ??
-    "bg-muted text-muted-foreground";
+    CATEGORY_PLACEHOLDER_COLORS[category] ?? "bg-muted text-muted-foreground";
 
   return (
     <Link
@@ -148,13 +140,8 @@ export function ProductCard({
         )}
 
         {/* Dates */}
-        {!compact && (releaseDate || lastUpdated) && (
+        {!compact && lastUpdated && (
           <div className="flex gap-3 flex-wrap pt-0.5 border-t border-border/50">
-            {releaseDate && (
-              <span className="text-xs text-muted-foreground pt-1">
-                {formatDate(releaseDate)} リリース
-              </span>
-            )}
             {lastUpdated && (
               <span className="text-xs text-muted-foreground pt-1">
                 最終更新: {formatRelative(lastUpdated)}

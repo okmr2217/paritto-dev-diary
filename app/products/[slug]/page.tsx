@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ExternalLink, Github, ChevronDown, CalendarDays } from "lucide-react";
+import { ExternalLink, Github, ChevronDown } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getAllPosts } from "@/lib/posts";
 import { PostCard } from "@/components/post-card";
@@ -98,7 +98,6 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
   return (
     <div className="space-y-12 pt-6">
-
       {/* ── 1. Product Header ───────────────────────────────── */}
       <section className="space-y-5">
         {/* Accent bar + Badges */}
@@ -173,14 +172,6 @@ export default async function ProductDetailPage({ params }: PageProps) {
                   {stack}
                 </span>
               ))}
-            </div>
-          )}
-          {product.releaseDate && (
-            <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-              <CalendarDays size={13} className="shrink-0" />
-              <span>
-                {new Date(product.releaseDate).toLocaleDateString("ja-JP")}
-              </span>
             </div>
           )}
         </div>
@@ -276,7 +267,9 @@ export default async function ProductDetailPage({ params }: PageProps) {
                     {new Date(entry.createdAt).toLocaleString("ja-JP")}
                   </p>
                   {entry.note && (
-                    <p className="text-sm text-muted-foreground">{entry.note}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {entry.note}
+                    </p>
                   )}
                 </div>
               </div>

@@ -18,7 +18,6 @@ interface Product {
   category: string;
   status: string;
   stacks: string[];
-  releaseDate: string | null;
   lastUpdated: string | null;
   thumbnail: { url: string; alt: string | null; isThumbnail: boolean } | null;
 }
@@ -35,12 +34,7 @@ const VALID_STATUSES = [
   "MAINTENANCE",
   "PAUSED",
 ] as const;
-const VALID_SORTS = [
-  "releaseDate_desc",
-  "releaseDate_asc",
-  "updated_desc",
-  "name_asc",
-] as const;
+const VALID_SORTS = ["updated_desc", "name_asc"] as const;
 const VALID_VIEWS = ["grid", "table"] as const;
 
 type Category = (typeof VALID_CATEGORIES)[number];
@@ -49,8 +43,6 @@ type Sort = (typeof VALID_SORTS)[number];
 type ViewMode = (typeof VALID_VIEWS)[number];
 
 const SORT_LABELS: Record<Sort, string> = {
-  releaseDate_desc: "リリース日（新しい順）",
-  releaseDate_asc: "リリース日（古い順）",
   updated_desc: "最終更新日（新しい順）",
   name_asc: "名前順",
 };
@@ -122,7 +114,9 @@ function TableRow({ product }: TableRowProps) {
   return (
     <tr
       className="border-b border-border hover:bg-muted/50 transition-colors cursor-pointer group"
-      onClick={() => { window.location.href = `/products/${product.slug}`; }}
+      onClick={() => {
+        window.location.href = `/products/${product.slug}`;
+      }}
     >
       <td className="px-4 py-3">
         <Link
@@ -141,12 +135,7 @@ function TableRow({ product }: TableRowProps) {
         </span>
       </td>
       <td className="px-4 py-3 text-sm text-muted-foreground">
-        {product.lastUpdated
-          ? formatDate(product.lastUpdated)
-          : "—"}
-      </td>
-      <td className="px-4 py-3 text-sm text-muted-foreground">
-        {product.releaseDate ? formatDate(product.releaseDate) : "—"}
+        {product.lastUpdated ? formatDate(product.lastUpdated) : "—"}
       </td>
       <td className="px-4 py-3">
         <div className="flex gap-1.5 flex-wrap">
@@ -238,31 +227,8 @@ export function ProductsClient({ products }: ProductsClientProps) {
       result = result.filter((p) => p.status === activeStatus);
     }
 
-    result.sort((a, b) => {
-      switch (activeSort) {
-        case "releaseDate_asc":
-          if (!a.releaseDate && !b.releaseDate) return 0;
-          if (!a.releaseDate) return 1;
-          if (!b.releaseDate) return -1;
-          return a.releaseDate.localeCompare(b.releaseDate);
-        case "updated_desc": {
-          const aDate = a.lastUpdated ?? a.releaseDate ?? "";
-          const bDate = b.lastUpdated ?? b.releaseDate ?? "";
-          return bDate.localeCompare(aDate);
-        }
-        case "name_asc":
-          return a.name.localeCompare(b.name, "ja");
-        default: {
-          if (!a.releaseDate && !b.releaseDate) return 0;
-          if (!a.releaseDate) return 1;
-          if (!b.releaseDate) return -1;
-          return b.releaseDate.localeCompare(a.releaseDate);
-        }
-      }
-    });
-
     return result;
-  }, [products, activeCategory, activeStatus, activeSort]);
+  }, [products, activeCategory, activeStatus]);
 
   const hasStatusFilter = activeStatus !== null;
   const activeProducts = hasStatusFilter
@@ -440,7 +406,6 @@ export function ProductsClient({ products }: ProductsClientProps) {
                     category={product.category}
                     status={product.status}
                     stacks={product.stacks}
-                    releaseDate={product.releaseDate}
                     lastUpdated={product.lastUpdated}
                     thumbnail={product.thumbnail}
                   />
@@ -467,7 +432,6 @@ export function ProductsClient({ products }: ProductsClientProps) {
                       category={product.category}
                       status={product.status}
                       stacks={product.stacks}
-                      releaseDate={product.releaseDate}
                       lastUpdated={product.lastUpdated}
                       thumbnail={product.thumbnail}
                       compact

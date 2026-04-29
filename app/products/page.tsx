@@ -25,7 +25,6 @@ export default async function ProductsPage() {
       category: true,
       status: true,
       stacks: true,
-      releaseDate: true,
       images: {
         where: { isThumbnail: true },
         take: 1,
@@ -43,10 +42,10 @@ export default async function ProductsPage() {
   const stats = {
     total: products.length,
     released: products.filter((p) =>
-      ["RELEASED", "MAINTENANCE"].includes(p.status)
+      ["RELEASED", "MAINTENANCE"].includes(p.status),
     ).length,
     developing: products.filter((p) =>
-      ["DEVELOPING", "IDEA"].includes(p.status)
+      ["DEVELOPING", "IDEA"].includes(p.status),
     ).length,
   };
 
@@ -57,10 +56,7 @@ export default async function ProductsPage() {
     category: p.category as string,
     status: p.status as string,
     stacks: p.stacks,
-    releaseDate: p.releaseDate ? p.releaseDate.toISOString() : null,
-    lastUpdated: p.releases[0]?.releaseDate
-      ? p.releases[0].releaseDate.toISOString()
-      : null,
+    lastUpdated: p.releases[0]?.releaseDate.toISOString(),
     thumbnail: p.images[0] ?? null,
   }));
 

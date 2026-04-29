@@ -36,7 +36,7 @@ export default async function Home() {
   const [productCount, featuredProducts, latestReleases] = await Promise.all([
     prisma.product.count({ where: { isPublic: true } }),
     prisma.product.findMany({
-      where: { isPublic: true, isFeatured: true },
+      where: { isPublic: true },
       orderBy: { createdAt: "desc" },
       take: 3,
       select: {
