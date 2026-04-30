@@ -1,8 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { X, ChevronLeft, ChevronRight, Monitor, Smartphone } from "lucide-react";
+import {
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Monitor,
+  Smartphone,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type DeviceType = "PC" | "MOBILE" | "OTHER";
@@ -27,13 +33,74 @@ interface LightboxProps {
   onNavigate: (i: number) => void;
 }
 
-function Lightbox({ images, index, productName, onClose, onNavigate }: LightboxProps) {
+function Lightbox({
+  images,
+  index,
+  productName,
+  onClose,
+  onNavigate,
+}: LightboxProps) {
   const image = images[index];
+  const [offset, setOffset] = useState(0);
+  const [transitioning, setTransitioning] = useState(false);
+  const touchStartX = useRef<number | null>(null);
+  const didSwipe = useRef(false);
+
+  useEffect(() => {
+    setOffset(0);
+    setTransitioning(false);
+  }, [index]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    didSwipe.current = false;
+    setTransitioning(false);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const delta = e.touches[0].clientX - touchStartX.current;
+    const atEdge =
+      (delta > 0 && index === 0) ||
+      (delta < 0 && index === images.length - 1);
+    setOffset(atEdge ? delta * 0.15 : delta);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const delta = e.changedTouches[0].clientX - touchStartX.current;
+    const canGoNext = delta < -60 && index < images.length - 1;
+    const canGoPrev = delta > 60 && index > 0;
+
+    setTransitioning(true);
+    if (canGoNext || canGoPrev) {
+      didSwipe.current = true;
+      setOffset(canGoNext ? -window.innerWidth : window.innerWidth);
+      const nextIndex = canGoNext ? index + 1 : index - 1;
+      setTimeout(() => {
+        onNavigate(nextIndex);
+        setTransitioning(false);
+        setOffset(0);
+      }, 220);
+    } else {
+      setOffset(0);
+      setTimeout(() => setTransitioning(false), 220);
+    }
+    touchStartX.current = null;
+  };
+
+  const handleOverlayClick = () => {
+    if (didSwipe.current) { didSwipe.current = false; return; }
+    onClose();
+  };
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/85"
-      onClick={onClose}
+      onClick={handleOverlayClick}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
       role="dialog"
       aria-modal
       aria-label="画像ビューア"
@@ -41,6 +108,10 @@ function Lightbox({ images, index, productName, onClose, onNavigate }: LightboxP
       <div
         className="relative flex flex-col items-center"
         onClick={(e) => e.stopPropagation()}
+        style={{
+          transform: `translateX(${offset}px)`,
+          transition: transitioning ? "transform 220ms ease-out" : "none",
+        }}
       >
         <Image
           src={image.url}
@@ -71,7 +142,7 @@ function Lightbox({ images, index, productName, onClose, onNavigate }: LightboxP
 
       {index > 0 && (
         <button
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-3 rounded-lg hover:bg-white/10 transition-colors"
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-3 rounded-lg hover:bg-white/10 transition-colors hidden md:flex"
           onClick={(e) => {
             e.stopPropagation();
             onNavigate(index - 1);
@@ -84,7 +155,7 @@ function Lightbox({ images, index, productName, onClose, onNavigate }: LightboxP
 
       {index < images.length - 1 && (
         <button
-          className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-3 rounded-lg hover:bg-white/10 transition-colors"
+          className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-3 rounded-lg hover:bg-white/10 transition-colors hidden md:flex"
           onClick={(e) => {
             e.stopPropagation();
             onNavigate(index + 1);
@@ -112,7 +183,7 @@ function PcItem({ image, productName, onClick }: PcItemProps) {
         "group relative flex-shrink-0 snap-start aspect-[8/5] rounded-lg overflow-hidden bg-muted",
         "border border-border shadow-sm cursor-pointer",
         "transition-shadow hover:shadow-md",
-        "w-[85vw] md:w-[46%]"
+        "w-[85vw] md:w-[46%]",
       )}
     >
       <div className="absolute inset-0 transition-transform duration-200 group-hover:scale-[1.02]">
@@ -149,7 +220,7 @@ function MobileItem({ image, productName, onClick }: MobileItemProps) {
         "w-[130px] md:w-[150px] aspect-[390/844]",
         "rounded-xl overflow-hidden bg-muted",
         "border border-border shadow-sm cursor-pointer",
-        "transition-shadow hover:shadow-md"
+        "transition-shadow hover:shadow-md",
       )}
     >
       <div className="absolute inset-0 transition-transform duration-200 group-hover:scale-[1.02]">
@@ -188,7 +259,10 @@ function SectionLabel({
   );
 }
 
-export function ScreenshotGallery({ images, productName }: ScreenshotGalleryProps) {
+export function ScreenshotGallery({
+  images,
+  productName,
+}: ScreenshotGalleryProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   useEffect(() => {
@@ -199,7 +273,7 @@ export function ScreenshotGallery({ images, productName }: ScreenshotGalleryProp
         setLightboxIndex((i) => (i !== null && i > 0 ? i - 1 : i));
       else if (e.key === "ArrowRight")
         setLightboxIndex((i) =>
-          i !== null && i < images.length - 1 ? i + 1 : i
+          i !== null && i < images.length - 1 ? i + 1 : i,
         );
     };
     document.addEventListener("keydown", onKey);
@@ -249,16 +323,19 @@ export function ScreenshotGallery({ images, productName }: ScreenshotGalleryProp
 
   return (
     <div className="space-y-6">
-      {/* PC Screenshots */}
-      {pcImages.length > 0 && (
+      {/* Mobile Screenshots */}
+      {mobileImages.length > 0 && (
         <div className="space-y-3">
           {hasBoth && (
-            <SectionLabel icon={<Monitor size={13} />} label="PC" count={pcImages.length} />
+            <SectionLabel
+              icon={<Smartphone size={13} />}
+              label="モバイル"
+              count={mobileImages.length}
+            />
           )}
-
-          <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory [scrollbar-width:thin] [scrollbar-color:var(--color-border)_transparent]">
-            {pcImages.map((img) => (
-              <PcItem
+          <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {mobileImages.map((img) => (
+              <MobileItem
                 key={img.id}
                 image={img}
                 productName={productName}
@@ -269,15 +346,20 @@ export function ScreenshotGallery({ images, productName }: ScreenshotGalleryProp
         </div>
       )}
 
-      {/* Mobile Screenshots */}
-      {mobileImages.length > 0 && (
+      {/* PC Screenshots */}
+      {pcImages.length > 0 && (
         <div className="space-y-3">
           {hasBoth && (
-            <SectionLabel icon={<Smartphone size={13} />} label="モバイル" count={mobileImages.length} />
+            <SectionLabel
+              icon={<Monitor size={13} />}
+              label="PC"
+              count={pcImages.length}
+            />
           )}
-          <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {mobileImages.map((img) => (
-              <MobileItem
+
+          <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory [scrollbar-width:thin] [scrollbar-color:var(--color-border)_transparent]">
+            {pcImages.map((img) => (
+              <PcItem
                 key={img.id}
                 image={img}
                 productName={productName}
