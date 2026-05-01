@@ -30,6 +30,7 @@ interface Product {
   themeColor: string | null;
   latestVersion: string | null;
   latestVersionDate: string | null;
+  createdAt: string;
 }
 
 interface ProductsClientProps {
@@ -45,10 +46,12 @@ const VALID_STATUSES = [
   "PAUSED",
 ] as const;
 const VALID_VIEWS = ["grid", "table"] as const;
+const VALID_SORTS = ["updated", "created"] as const;
 
 type Category = (typeof VALID_CATEGORIES)[number];
 type Status = (typeof VALID_STATUSES)[number];
 type ViewMode = (typeof VALID_VIEWS)[number];
+type SortOrder = (typeof VALID_SORTS)[number];
 
 const CATEGORY_FILTERS: { label: string; value: Category | null }[] = [
   { label: "すべて", value: null },
@@ -82,15 +85,21 @@ function parseView(value: string | null): ViewMode {
   return value === "table" ? "table" : "grid";
 }
 
+function parseSort(value: string | null): SortOrder {
+  return value === "created" ? "created" : "updated";
+}
+
 function buildQuery(
   category: Category | null,
   status: Status | null,
   view: ViewMode,
+  sort: SortOrder,
 ): string {
   const params = new URLSearchParams();
   if (category) params.set("category", category);
   if (status) params.set("status", status);
   if (view !== "grid") params.set("view", view);
+  if (sort !== "updated") params.set("sort", sort);
   return params.toString();
 }
 
@@ -196,19 +205,24 @@ export function ProductsClient({ products }: ProductsClientProps) {
   const [viewMode, setViewMode] = useState<ViewMode>(
     parseView(searchParams.get("view")),
   );
+  const [sortOrder, setSortOrder] = useState<SortOrder>(
+    parseSort(searchParams.get("sort")),
+  );
 
   useEffect(() => {
     setActiveCategory(parseCategory(searchParams.get("category")));
     setActiveStatus(parseStatus(searchParams.get("status")));
     setViewMode(parseView(searchParams.get("view")));
+    setSortOrder(parseSort(searchParams.get("sort")));
   }, [searchParams]);
 
   const pushUrl = (
     category: Category | null,
     status: Status | null,
     view: ViewMode,
+    sort: SortOrder,
   ) => {
-    const query = buildQuery(category, status, view);
+    const query = buildQuery(category, status, view, sort);
     startTransition(() => {
       router.replace(query ? `/products?${query}` : "/products", {
         scroll: false,
@@ -218,17 +232,22 @@ export function ProductsClient({ products }: ProductsClientProps) {
 
   const handleCategoryChange = (value: Category | null) => {
     setActiveCategory(value);
-    pushUrl(value, activeStatus, viewMode);
+    pushUrl(value, activeStatus, viewMode, sortOrder);
   };
 
   const handleStatusChange = (value: Status | null) => {
     setActiveStatus(value);
-    pushUrl(activeCategory, value, viewMode);
+    pushUrl(activeCategory, value, viewMode, sortOrder);
   };
 
   const handleViewChange = (value: ViewMode) => {
     setViewMode(value);
-    pushUrl(activeCategory, activeStatus, value);
+    pushUrl(activeCategory, activeStatus, value, sortOrder);
+  };
+
+  const handleSortChange = (value: SortOrder) => {
+    setSortOrder(value);
+    pushUrl(activeCategory, activeStatus, viewMode, value);
   };
 
   const filteredProducts = useMemo(() => {
@@ -239,10 +258,19 @@ export function ProductsClient({ products }: ProductsClientProps) {
     if (activeStatus) {
       result = result.filter((p) => p.status === activeStatus);
     }
+    result.sort((a, b) => {
+      if (sortOrder === "created") {
+        return b.createdAt > a.createdAt ? 1 : -1;
+      }
+      // updated: sort by latest release date, fall back to createdAt
+      const aDate = a.latestVersionDate ?? a.createdAt;
+      const bDate = b.latestVersionDate ?? b.createdAt;
+      return bDate > aDate ? 1 : -1;
+    });
     return result;
-  }, [products, activeCategory, activeStatus]);
+  }, [products, activeCategory, activeStatus, sortOrder]);
 
-  const gridKey = `${activeCategory ?? "all"}-${activeStatus ?? "all"}-${viewMode}`;
+  const gridKey = `${activeCategory ?? "all"}-${activeStatus ?? "all"}-${viewMode}-${sortOrder}`;
 
   return (
     <div className="space-y-6">
@@ -268,6 +296,16 @@ export function ProductsClient({ products }: ProductsClientProps) {
               );
             })}
           </nav>
+
+          {/* Sort order */}
+          <select
+            value={sortOrder}
+            onChange={(e) => handleSortChange(e.target.value as SortOrder)}
+            className="text-xs bg-card border border-border rounded px-2 py-1 text-foreground focus:outline-none self-start sm:self-auto"
+          >
+            <option value="updated">更新順</option>
+            <option value="created">公開順</option>
+          </select>
 
           {/* View mode toggle (PC only) */}
           <div className="hidden md:flex items-center gap-1 border border-border rounded-lg p-0.5 self-start sm:self-auto">

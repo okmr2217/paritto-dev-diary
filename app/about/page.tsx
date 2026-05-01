@@ -168,16 +168,45 @@ export default function AboutPage() {
       {/* Divider */}
       <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
-      {/* Background Section */}
+      {/* Timeline Section */}
       <section className="space-y-6">
         <h2 className="text-xl font-bold font-heading tech-gradient-text">
           これまで
         </h2>
-        <div className="max-w-4xl p-6 bg-card border border-border rounded-lg">
-          <p className="text-foreground leading-relaxed">
-            高校1年で中退後、株式会社CansでアルバイトとしてWeb制作（コーダー）を開始しました。
-            同社でアプリ開発や自動AI音声コールシステムの開発などを経験し、現在は株式会社ユニフェイスで製造業向けシステムの開発に携わっています。
-          </p>
+        <div className="relative max-w-2xl">
+          {/* Vertical line */}
+          <div className="absolute left-[7px] top-2 bottom-2 w-0.5 bg-gradient-to-b from-accent via-primary to-tech-cyan" />
+
+          <ol className="space-y-6 pl-8">
+            {[
+              { year: "2007", text: "生まれる" },
+              {
+                year: "2023",
+                text: "高校1年で中退。株式会社Cansにてアルバイトとして Web 制作・アプリ開発を開始",
+              },
+              {
+                year: "2025",
+                text: "18歳で株式会社ユニフェイスに正社員入社。製造業向けシステム開発に従事",
+              },
+              {
+                year: "現在",
+                text: "業務開発と個人開発を並行しながら Web エンジニアとして活動中",
+              },
+            ].map(({ year, text }) => (
+              <li key={year} className="relative">
+                {/* Dot */}
+                <div className="absolute -left-8 top-1 w-3.5 h-3.5 rounded-full bg-background border-2 border-accent" />
+                <div className="space-y-0.5">
+                  <span className="text-xs font-mono font-bold text-accent">
+                    {year}
+                  </span>
+                  <p className="text-sm text-foreground leading-relaxed">
+                    {text}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
@@ -313,28 +342,45 @@ export default function AboutPage() {
           技術スタック
         </h2>
 
-        <div className="grid md:grid-cols-2 gap-6 max-w-4xl">
-          <div className="p-6 bg-card border border-border rounded-lg">
-            <h3 className="text-lg font-bold font-heading mb-3">
-              言語 & フレームワーク
-            </h3>
-            <p className="text-foreground leading-relaxed mb-3">
-              個人開発と仕事ではTypeScript、Next.jsを使っています。Next.jsは一番お気に入りです。
-              業務ではC#、.NETも使います。UIはTailwind
-              CSS、shadcn/uiが好きです。
-            </p>
-          </div>
-
-          <div className="p-6 bg-card border border-border rounded-lg">
-            <h3 className="text-lg font-bold font-heading mb-3">
-              AI & デプロイ
-            </h3>
-            <p className="text-foreground leading-relaxed mb-3">
-              AIは個人開発ではClaude Codeを、業務ではCodexも使います。
-              技術選定は、会社では技術スタックに従いますが、個人開発ではネット上の情報量の多さやAIとの相性、将来的に仕事として使えそうな技術かどうかを意識しています。
-              Next.jsはVercelで無料でホスティングできて、デプロイしやすいのも良いですね。
-            </p>
-          </div>
+        <div className="space-y-4 max-w-2xl">
+          {[
+            {
+              label: "フレームワーク",
+              stacks: ["Next.js", "React"],
+            },
+            {
+              label: "言語",
+              stacks: ["TypeScript", "C#"],
+            },
+            {
+              label: "スタイリング",
+              stacks: ["Tailwind CSS", "shadcn/ui"],
+            },
+            {
+              label: "バックエンド",
+              stacks: ["Supabase", "Prisma", "PostgreSQL"],
+            },
+            {
+              label: "その他",
+              stacks: ["Vercel", "GitHub", "Claude Code"],
+            },
+          ].map(({ label, stacks }) => (
+            <div key={label} className="flex items-start gap-3">
+              <span className="text-xs text-muted-foreground shrink-0 w-28 pt-0.5 font-mono">
+                {label}
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {stacks.map((stack) => (
+                  <span
+                    key={stack}
+                    className="text-xs px-2.5 py-1 bg-muted rounded-full text-foreground border border-border"
+                  >
+                    {stack}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 

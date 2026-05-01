@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useTransition } from "react";
 import { PostCard } from "@/components/post-card";
 import type { PostMeta } from "@/lib/posts";
 import type { PostCategory } from "@/lib/post-constants";
@@ -13,6 +14,8 @@ type SearchProps = {
 const ALL_CATEGORY = "all" as const;
 type CategoryFilter = PostCategory | typeof ALL_CATEGORY;
 
+const VALID_CATEGORIES: PostCategory[] = ["A", "B", "C", "D"];
+
 const CATEGORY_FILTERS: { value: CategoryFilter; label: string }[] = [
   { value: ALL_CATEGORY, label: "すべて" },
   { value: "A", label: CATEGORY_LABELS["A"] },
@@ -22,8 +25,24 @@ const CATEGORY_FILTERS: { value: CategoryFilter; label: string }[] = [
 ];
 
 export function Search({ posts }: SearchProps) {
-  const [activeCategory, setActiveCategory] =
-    useState<CategoryFilter>(ALL_CATEGORY);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
+
+  const rawCategory = searchParams.get("category");
+  const activeCategory: CategoryFilter =
+    rawCategory && (VALID_CATEGORIES as string[]).includes(rawCategory)
+      ? (rawCategory as PostCategory)
+      : ALL_CATEGORY;
+
+  const handleCategoryChange = (value: CategoryFilter) => {
+    const params = new URLSearchParams();
+    if (value !== ALL_CATEGORY) params.set("category", value);
+    const qs = params.toString();
+    startTransition(() => {
+      router.replace(`/blog${qs ? `?${qs}` : ""}`, { scroll: false });
+    });
+  };
 
   const filteredPosts = posts.filter(
     (post) =>
@@ -31,14 +50,14 @@ export function Search({ posts }: SearchProps) {
   );
 
   return (
-    <div>
+    <div className={`transition-opacity ${isPending ? "opacity-50" : ""}`}>
       {/* Category filter tabs */}
       <div className="flex flex-wrap gap-2 mb-6">
         {CATEGORY_FILTERS.map(({ value, label }) => (
           <button
             key={value}
-            onClick={() => setActiveCategory(value)}
-            className={`relative px-3 py-1.5 text-xs font-medium font-heading rounded border overflow-hidden transition-all duration-200 ${
+            onClick={() => handleCategoryChange(value)}
+            className={`relative px-3 py-1.5 text-xs font-medium font-heading rounded border overflow-hidden transition-all duration-200 cursor-pointer ${
               activeCategory === value
                 ? "border-transparent text-foreground"
                 : "border-border text-muted-foreground hover:text-foreground hover:border-border/80"

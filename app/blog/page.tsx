@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { getAllPosts } from "@/lib/posts";
 import { Search } from "@/components/search";
 import { PageHero } from "@/components/page-hero";
@@ -20,7 +21,9 @@ export default function BlogPage() {
         description="Next.jsを中心としたモダンな技術スタックによる個人開発について発信しています。"
         icon={BookOpen}
       />
-      <Search posts={posts} />
+      <Suspense fallback={null}>
+        <Search posts={posts} />
+      </Suspense>
     </div>
   );
 }

@@ -10,6 +10,7 @@ import Image from "next/image";
 const navLinks = [
   { href: "/blog", label: "Blog" },
   { href: "/products", label: "Works" },
+  { href: "/releases", label: "Releases" },
   { href: "/about", label: "About" },
 ];
 
@@ -42,6 +43,7 @@ export function Header() {
   const isActive = (href: string) => {
     if (href === "/blog") return pathname.startsWith("/blog");
     if (href === "/products") return pathname.startsWith("/products");
+    if (href === "/releases") return pathname.startsWith("/releases");
     return pathname === href;
   };
 

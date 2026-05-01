@@ -26,6 +26,7 @@ export default async function ProductsPage() {
       status: true,
       iconUrl: true,
       themeColor: true,
+      createdAt: true,
       releases: {
         where: { isDraft: false },
         orderBy: { releaseDate: "desc" },
@@ -55,6 +56,7 @@ export default async function ProductsPage() {
     themeColor: p.themeColor ?? null,
     latestVersion: p.releases[0]?.version ?? null,
     latestVersionDate: p.releases[0]?.releaseDate.toISOString() ?? null,
+    createdAt: p.createdAt.toISOString(),
   }));
 
   return (

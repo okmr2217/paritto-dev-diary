@@ -7,6 +7,7 @@ import {
 import { ThemeProvider } from "@/components/theme-provider";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 const ibmPlexSansJP = IBM_Plex_Sans_JP({
@@ -84,6 +85,7 @@ export default function RootLayout({
             <Footer />
           </div>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );

@@ -3,15 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { getAllPosts } from "@/lib/posts";
 import { prisma } from "@/lib/prisma";
-import {
-  CATEGORY_LABELS,
-  CATEGORY_COLORS,
-  STATUS_LABELS,
-  STATUS_COLORS,
-  RELEASE_TYPE_LABELS,
-} from "@/lib/product-constants";
+import { STATUS_LABELS, STATUS_COLORS } from "@/lib/product-constants";
 import { PostCard } from "@/components/post-card";
-import { ArrowRight, User, Package } from "lucide-react";
+import { ReleaseCard } from "@/components/release-card";
+import { ArrowRight, Package, Rocket } from "lucide-react";
 
 export const metadata: Metadata = {
   title: {
@@ -21,53 +16,57 @@ export const metadata: Metadata = {
     "Next.js を中心としたモダンな技術スタックで、個人開発のリアルな試行錯誤を発信する Web Developer Daichi の開発日記ブログです。",
 };
 
-const RELEASE_TYPE_COLORS: Record<string, string> = {
-  MAJOR: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
-  MINOR: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  PATCH: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  HOTFIX:
-    "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
-};
-
 export default async function Home() {
   const posts = getAllPosts();
   const recentPosts = posts.slice(0, 3);
 
-  const [productCount, featuredProducts, latestReleases] = await Promise.all([
-    prisma.product.count({ where: { isPublic: true } }),
-    prisma.product.findMany({
-      where: { isPublic: true },
-      orderBy: { createdAt: "desc" },
-      take: 3,
-      select: {
-        slug: true,
-        name: true,
-        description: true,
-        category: true,
-        status: true,
-        images: {
-          where: { isThumbnail: true },
-          take: 1,
-          select: { url: true, alt: true },
+  const [totalProductCount, activeProducts, totalReleaseCount, latestReleases] =
+    await Promise.all([
+      prisma.product.count({ where: { isPublic: true } }),
+      prisma.product.findMany({
+        where: {
+          isPublic: true,
+          status: { in: ["RELEASED", "MAINTENANCE", "DEVELOPING"] },
         },
-      },
-    }),
-    prisma.release.findMany({
-      where: { isDraft: false },
-      orderBy: { releaseDate: "desc" },
-      take: 3,
-      select: {
-        id: true,
-        version: true,
-        title: true,
-        releaseDate: true,
-        type: true,
-        product: {
-          select: { slug: true, name: true },
+        orderBy: { sortOrder: "asc" },
+        take: 6,
+        select: {
+          slug: true,
+          name: true,
+          description: true,
+          status: true,
+          stacks: true,
+          iconUrl: true,
+          themeColor: true,
         },
-      },
-    }),
-  ]);
+      }),
+      prisma.release.count({ where: { isDraft: false } }),
+      prisma.release.findMany({
+        where: { isDraft: false },
+        orderBy: { releaseDate: "desc" },
+        take: 5,
+        select: {
+          id: true,
+          version: true,
+          title: true,
+          releaseDate: true,
+          type: true,
+          product: {
+            select: {
+              slug: true,
+              name: true,
+              iconUrl: true,
+              themeColor: true,
+            },
+          },
+        },
+      }),
+    ]);
+
+  const serializedReleases = latestReleases.map((r) => ({
+    ...r,
+    releaseDate: r.releaseDate.toISOString(),
+  }));
 
   return (
     <div className="space-y-10">
@@ -84,7 +83,7 @@ export default async function Home() {
           {/* Eyebrow + Headline */}
           <div className="space-y-4">
             <p className="text-xs font-mono text-muted-foreground tracking-[0.2em] uppercase">
-              Personal Dev Blog
+              Personal Dev Studio
             </p>
             <h1 className="text-3xl md:text-4xl font-bold font-heading tech-gradient-text leading-[1.15]">
               パリッと開発日記
@@ -92,6 +91,9 @@ export default async function Home() {
             <p className="text-sm md:text-base text-muted-foreground leading-relaxed max-w-lg">
               Next.js を中心としたモダンな技術スタックで、
               個人開発のリアルな試行錯誤を発信しています。
+            </p>
+            <p className="text-xs text-muted-foreground/70 font-mono">
+              Next.js / TypeScript / Tailwind CSS / Supabase / Prisma
             </p>
           </div>
 
@@ -124,9 +126,15 @@ export default async function Home() {
               </div>
               <div>
                 <p className="text-lg font-bold font-heading tech-gradient-text tabular-nums">
-                  {productCount}
+                  {totalProductCount}
                 </p>
-                <p className="text-xs text-muted-foreground">制作物</p>
+                <p className="text-xs text-muted-foreground">プロダクト</p>
+              </div>
+              <div>
+                <p className="text-lg font-bold font-heading tech-gradient-text tabular-nums">
+                  {totalReleaseCount}
+                </p>
+                <p className="text-xs text-muted-foreground">リリース</p>
               </div>
             </div>
           </div>
@@ -134,18 +142,18 @@ export default async function Home() {
           {/* CTA buttons */}
           <div className="flex flex-wrap gap-3">
             <Link
-              href="/about"
+              href="/products"
               className="inline-flex items-center gap-2 px-5 py-2.5 tech-gradient text-white text-sm font-medium rounded-lg hover:opacity-90 transition-opacity"
             >
-              <User className="w-4 h-4" />
-              自己紹介を見る
+              <Package className="w-4 h-4" />
+              プロダクトを見る
             </Link>
             <Link
-              href="/products"
+              href="/releases"
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-card border border-border text-sm font-medium rounded-lg hover:border-accent hover:text-accent transition-colors"
             >
-              <Package className="w-4 h-4" />
-              制作物一覧
+              <Rocket className="w-4 h-4" />
+              リリースノート
             </Link>
           </div>
         </div>
@@ -155,14 +163,14 @@ export default async function Home() {
       <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
       {/* ── Latest Release Notes ──────────────────────────── */}
-      {latestReleases.length > 0 && (
+      {serializedReleases.length > 0 && (
         <section className="space-y-5">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold font-heading tech-gradient-text">
-              最新リリースノート
+              リリースノート
             </h2>
             <Link
-              href="/products"
+              href="/releases"
               className="flex items-center gap-1 text-sm text-muted-foreground hover:text-accent transition-colors"
             >
               すべて見る
@@ -171,31 +179,16 @@ export default async function Home() {
           </div>
 
           <div className="space-y-2">
-            {latestReleases.map((release) => (
-              <Link
+            {serializedReleases.map((release) => (
+              <ReleaseCard
                 key={release.id}
-                href={`/products/${release.product.slug}`}
-                className="group flex items-center gap-3 flex-wrap p-3 bg-card border border-border rounded-lg hover:border-accent/50 transition-colors"
-              >
-                <span className="font-mono font-bold text-sm text-foreground">
-                  {release.version}
-                </span>
-                <span
-                  className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${RELEASE_TYPE_COLORS[release.type] ?? "bg-gray-100 text-gray-700"}`}
-                >
-                  {RELEASE_TYPE_LABELS[release.type] ?? release.type}
-                </span>
-                <span className="text-xs text-muted-foreground shrink-0">
-                  {new Date(release.releaseDate).toLocaleDateString("ja-JP")}
-                </span>
-                <span className="text-sm text-foreground font-medium group-hover:text-accent transition-colors flex-1 min-w-0 truncate">
-                  {release.title}
-                </span>
-                <span className="text-xs text-muted-foreground shrink-0 bg-muted px-2 py-0.5 rounded">
-                  {release.product.name}
-                </span>
-                <ArrowRight className="w-3.5 h-3.5 text-muted-foreground shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-accent" />
-              </Link>
+                version={release.version}
+                type={release.type}
+                releaseDate={release.releaseDate}
+                title={release.title}
+                showContent={false}
+                product={release.product}
+              />
             ))}
           </div>
         </section>
@@ -204,12 +197,12 @@ export default async function Home() {
       {/* ── Divider ───────────────────────────────────────── */}
       <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
-      {/* ── Featured Products ─────────────────────────────── */}
-      {featuredProducts.length > 0 && (
+      {/* ── Active Products ───────────────────────────────── */}
+      {activeProducts.length > 0 && (
         <section className="space-y-5">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold font-heading tech-gradient-text">
-              代表的なプロダクト
+              プロダクト
             </h2>
             <Link
               href="/products"
@@ -220,38 +213,40 @@ export default async function Home() {
             </Link>
           </div>
 
-          <div className="space-y-3">
-            {featuredProducts.map((product) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {activeProducts.map((product) => (
               <Link
                 key={product.slug}
                 href={`/products/${product.slug}`}
                 className="group flex gap-4 p-4 bg-card border border-border rounded-lg card-hover-lift overflow-hidden"
               >
-                {/* Thumbnail */}
-                <div className="relative w-28 h-28 rounded-lg overflow-hidden bg-muted shrink-0">
-                  {product.images[0] ? (
-                    <Image
-                      src={product.images[0].url}
-                      alt={product.images[0].alt ?? product.name}
-                      fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
-                      sizes="112px"
+                {/* Icon */}
+                <div
+                  className="relative w-12 h-12 rounded-xl overflow-hidden shrink-0 flex items-center justify-center"
+                  style={{
+                    backgroundColor: product.themeColor
+                      ? `${product.themeColor}20`
+                      : "var(--color-muted)",
+                  }}
+                >
+                  {product.iconUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={product.iconUrl}
+                      alt={product.name}
+                      className="w-9 h-9 object-contain"
                     />
                   ) : (
-                    <div className="flex h-full items-center justify-center text-muted-foreground text-xs">
-                      No Image
-                    </div>
+                    <Package
+                      className="w-6 h-6 text-muted-foreground opacity-60"
+                      style={{ color: product.themeColor ?? undefined }}
+                    />
                   )}
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 min-w-0 space-y-2">
-                  <div className="flex gap-1.5 flex-wrap">
-                    <span
-                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${CATEGORY_COLORS[product.category] ?? "bg-gray-100 text-gray-700"}`}
-                    >
-                      {CATEGORY_LABELS[product.category] ?? product.category}
-                    </span>
+                <div className="flex-1 min-w-0 space-y-1.5">
+                  <div className="flex items-center gap-1.5">
                     <span
                       className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[product.status] ?? "bg-gray-100 text-gray-700"}`}
                     >
@@ -262,16 +257,37 @@ export default async function Home() {
                     {product.name}
                   </h3>
                   {product.description && (
-                    <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+                    <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
                       {product.description}
                     </p>
                   )}
+                  {product.stacks.length > 0 && (
+                    <div className="flex flex-wrap gap-1">
+                      {product.stacks.slice(0, 4).map((stack) => (
+                        <span
+                          key={stack}
+                          className="text-[10px] px-1.5 py-0.5 bg-muted rounded text-muted-foreground"
+                        >
+                          {stack}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
-
-                <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0 self-center transition-transform duration-200 group-hover:translate-x-1 group-hover:text-accent" />
               </Link>
             ))}
           </div>
+
+          {/* Archive link */}
+          <p className="text-sm text-muted-foreground">
+            過去のプロダクト・休止中のプロジェクトは
+            <Link
+              href="/products?status=PAUSED"
+              className="text-accent hover:underline ml-0.5"
+            >
+              こちら →
+            </Link>
+          </p>
         </section>
       )}
 
