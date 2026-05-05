@@ -1,12 +1,27 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { unified } from "unified";
+import remarkParse from "remark-parse";
+import remarkGfm from "remark-gfm";
+import remarkRehype from "remark-rehype";
+import rehypeStringify from "rehype-stringify";
 import { getAllPosts } from "@/lib/posts";
 import { prisma } from "@/lib/prisma";
 import { STATUS_LABELS, STATUS_COLORS } from "@/lib/product-constants";
 import { PostCard } from "@/components/post-card";
 import { ReleaseCard } from "@/components/release-card";
 import { ArrowRight, Package, Rocket } from "lucide-react";
+
+async function processMarkdown(content: string): Promise<string> {
+  const result = await unified()
+    .use(remarkParse)
+    .use(remarkGfm)
+    .use(remarkRehype)
+    .use(rehypeStringify)
+    .process(content);
+  return result.toString();
+}
 
 export const metadata: Metadata = {
   title: {
@@ -49,6 +64,7 @@ export default async function Home() {
           id: true,
           version: true,
           title: true,
+          content: true,
           releaseDate: true,
           type: true,
           product: {
@@ -69,10 +85,13 @@ export default async function Home() {
 
   const productMap = Object.fromEntries(allProductsForMap.map((p) => [p.slug, p]));
 
-  const serializedReleases = latestReleases.map((r) => ({
-    ...r,
-    releaseDate: r.releaseDate.toISOString(),
-  }));
+  const serializedReleases = await Promise.all(
+    latestReleases.map(async (r) => ({
+      ...r,
+      contentHtml: r.content ? await processMarkdown(r.content) : "",
+      releaseDate: r.releaseDate.toISOString(),
+    })),
+  );
 
   return (
     <div className="space-y-10">
@@ -192,7 +211,8 @@ export default async function Home() {
                 type={release.type}
                 releaseDate={release.releaseDate}
                 title={release.title}
-                showContent={false}
+                contentHtml={release.contentHtml}
+                showContent
                 product={release.product}
               />
             ))}
