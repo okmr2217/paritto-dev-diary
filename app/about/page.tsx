@@ -387,6 +387,28 @@ export default function AboutPage() {
       {/* Divider */}
       <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
+      {/* Philosophy Link */}
+      <section className="space-y-4">
+        <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+        <div className="p-6 bg-card border border-border rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <h2 className="font-bold font-heading">アプリ群に通底する設計思想</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Yarukoto, Peak Log, ツケカンなどのアプリが共有する、記録と振り返りの考え方をまとめています。
+            </p>
+          </div>
+          <Link
+            href="/philosophy"
+            className="shrink-0 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:underline"
+          >
+            設計思想を読む →
+          </Link>
+        </div>
+      </section>
+
+      {/* Divider */}
+      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+
       {/* Contact Section */}
       <section id="contact" className="space-y-6">
         <h2 className="text-xl font-bold font-heading tech-gradient-text">

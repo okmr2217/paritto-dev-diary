@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ProfileCard } from "./profile-card";
 
 export function Footer() {
@@ -7,10 +8,18 @@ export function Footer() {
         <div className="mb-8 max-w-2xl">
           <ProfileCard />
         </div>
-        <div className="flex items-center justify-between pt-6 border-t border-border/50">
-          <p className="text-sm text-muted-foreground font-mono">
-            &copy; {new Date().getFullYear()} パリッと開発日記
-          </p>
+        <div className="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-border/50">
+          <div className="flex items-center gap-4">
+            <p className="text-sm text-muted-foreground font-mono">
+              &copy; {new Date().getFullYear()} パリッと開発日記
+            </p>
+            <Link
+              href="/philosophy"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              設計思想
+            </Link>
+          </div>
           <div className="flex items-center gap-2">
             <div className="h-1 w-8 tech-gradient rounded-full" />
             <span className="text-xs text-muted-foreground font-heading">

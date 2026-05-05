@@ -346,6 +346,30 @@ export default async function Home() {
           ))}
         </div>
       </section>
+
+      {/* ── Divider ───────────────────────────────────────── */}
+      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+
+      {/* ── Philosophy CTA ────────────────────────────────── */}
+      <section>
+        <div className="relative p-6 bg-card border border-border rounded-xl overflow-hidden">
+          <div className="absolute -top-6 -right-10 w-40 h-40 rounded-full tech-gradient opacity-[0.07] blur-2xl pointer-events-none" />
+          <div className="relative space-y-3">
+            <div className="h-1 w-12 tech-gradient rounded-full" />
+            <h2 className="text-lg font-bold font-heading">設計思想</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-lg">
+              Yarukoto, Peak Log, ツケカンなどのアプリ群に共通する、記録と振り返りの考え方をまとめています。
+            </p>
+            <Link
+              href="/philosophy"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:underline"
+            >
+              読む
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

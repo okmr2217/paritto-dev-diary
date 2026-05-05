@@ -281,6 +281,19 @@ export default async function ProductDetailPage({ params }: PageProps) {
         </section>
       )}
 
+      {/* Philosophy Link */}
+      <div className="p-5 bg-muted/30 border border-border rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          このプロダクトの背景にある考え方
+        </p>
+        <Link
+          href="/philosophy"
+          className="shrink-0 text-sm font-medium text-accent hover:underline"
+        >
+          設計思想を読む →
+        </Link>
+      </div>
+
       {/* Back Link */}
       <div className="pb-4">
         <Link
