@@ -71,7 +71,7 @@ export default async function PhilosophyPage() {
   return (
     <div className="space-y-12 pt-6">
       <PageHero
-        title="設計思想"
+        title="Philosophy（設計思想）"
         description="Yarukoto / Peak Log / ツケカン / Stockee / Launchpad に共通する、記録と振り返りの考え方。"
         icon={BookOpen}
       />
