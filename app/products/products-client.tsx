@@ -28,6 +28,7 @@ interface Product {
   status: string;
   iconUrl: string | null;
   themeColor: string | null;
+  sortOrder: number;
   latestVersion: string | null;
   latestVersionDate: string | null;
   createdAt: string;
@@ -46,7 +47,7 @@ const VALID_STATUSES = [
   "PAUSED",
 ] as const;
 const VALID_VIEWS = ["grid", "table"] as const;
-const VALID_SORTS = ["updated", "created"] as const;
+const VALID_SORTS = ["order", "updated", "created"] as const;
 
 type Category = (typeof VALID_CATEGORIES)[number];
 type Status = (typeof VALID_STATUSES)[number];
@@ -86,7 +87,9 @@ function parseView(value: string | null): ViewMode {
 }
 
 function parseSort(value: string | null): SortOrder {
-  return value === "created" ? "created" : "updated";
+  if (value === "updated") return "updated";
+  if (value === "created") return "created";
+  return "order";
 }
 
 function buildQuery(
@@ -99,7 +102,7 @@ function buildQuery(
   if (category) params.set("category", category);
   if (status) params.set("status", status);
   if (view !== "grid") params.set("view", view);
-  if (sort !== "updated") params.set("sort", sort);
+  if (sort !== "order") params.set("sort", sort);
   return params.toString();
 }
 
@@ -259,6 +262,9 @@ export function ProductsClient({ products }: ProductsClientProps) {
       result = result.filter((p) => p.status === activeStatus);
     }
     result.sort((a, b) => {
+      if (sortOrder === "order") {
+        return a.sortOrder - b.sortOrder;
+      }
       if (sortOrder === "created") {
         return b.createdAt > a.createdAt ? 1 : -1;
       }
@@ -303,6 +309,7 @@ export function ProductsClient({ products }: ProductsClientProps) {
             onChange={(e) => handleSortChange(e.target.value as SortOrder)}
             className="text-xs bg-card border border-border rounded px-2 py-1 text-foreground focus:outline-none self-start sm:self-auto"
           >
+            <option value="order">並び順</option>
             <option value="updated">更新順</option>
             <option value="created">公開順</option>
           </select>

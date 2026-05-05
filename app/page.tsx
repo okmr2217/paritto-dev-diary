@@ -20,7 +20,7 @@ export default async function Home() {
   const posts = getAllPosts();
   const recentPosts = posts.slice(0, 3);
 
-  const [totalProductCount, activeProducts, totalReleaseCount, latestReleases] =
+  const [totalProductCount, activeProducts, totalReleaseCount, latestReleases, allProductsForMap] =
     await Promise.all([
       prisma.product.count({ where: { isPublic: true } }),
       prisma.product.findMany({
@@ -61,7 +61,13 @@ export default async function Home() {
           },
         },
       }),
+      prisma.product.findMany({
+        where: { isPublic: true },
+        select: { slug: true, name: true, iconUrl: true, themeColor: true },
+      }),
     ]);
+
+  const productMap = Object.fromEntries(allProductsForMap.map((p) => [p.slug, p]));
 
   const serializedReleases = latestReleases.map((r) => ({
     ...r,
@@ -310,7 +316,13 @@ export default async function Home() {
         </div>
         <div className="space-y-3">
           {recentPosts.map((post) => (
-            <PostCard key={post.slug} post={post} />
+            <PostCard
+              key={post.slug}
+              post={post}
+              productInfo={
+                post.productSlug ? productMap[post.productSlug] : undefined
+              }
+            />
           ))}
         </div>
       </section>

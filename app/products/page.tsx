@@ -9,7 +9,7 @@ import { Package } from "lucide-react";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Works",
+  title: "Products",
   description:
     "個人開発した Web アプリやツールの一覧。各プロダクトの概要・ステータス・リリース履歴を確認できます。",
 };
@@ -26,6 +26,7 @@ export default async function ProductsPage() {
       status: true,
       iconUrl: true,
       themeColor: true,
+      sortOrder: true,
       createdAt: true,
       releases: {
         where: { isDraft: false },
@@ -54,6 +55,7 @@ export default async function ProductsPage() {
     status: p.status as string,
     iconUrl: p.iconUrl ?? null,
     themeColor: p.themeColor ?? null,
+    sortOrder: p.sortOrder,
     latestVersion: p.releases[0]?.version ?? null,
     latestVersionDate: p.releases[0]?.releaseDate.toISOString() ?? null,
     createdAt: p.createdAt.toISOString(),
@@ -64,7 +66,7 @@ export default async function ProductsPage() {
       {/* Header with stats */}
       <div className="space-y-4">
         <PageHero
-          title="Works"
+          title="Products"
           description="個人開発した制作物の一覧です。"
           icon={Package}
         />

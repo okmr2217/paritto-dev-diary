@@ -2,13 +2,14 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
-import { PostCard } from "@/components/post-card";
+import { PostCard, type PostCardProductInfo } from "@/components/post-card";
 import type { PostMeta } from "@/lib/posts";
 import type { PostCategory } from "@/lib/post-constants";
 import { CATEGORY_LABELS } from "@/lib/post-constants";
 
 type SearchProps = {
   posts: PostMeta[];
+  productMap?: Record<string, PostCardProductInfo>;
 };
 
 const ALL_CATEGORY = "all" as const;
@@ -24,7 +25,7 @@ const CATEGORY_FILTERS: { value: CategoryFilter; label: string }[] = [
   { value: "D", label: CATEGORY_LABELS["D"] },
 ];
 
-export function Search({ posts }: SearchProps) {
+export function Search({ posts, productMap }: SearchProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
@@ -90,7 +91,14 @@ export function Search({ posts }: SearchProps) {
                 animationFillMode: "both",
               }}
             >
-              <PostCard post={post} />
+              <PostCard
+                post={post}
+                productInfo={
+                  post.productSlug && productMap
+                    ? productMap[post.productSlug]
+                    : undefined
+                }
+              />
             </div>
           ))}
         </div>

@@ -69,7 +69,9 @@ export default async function PostPage({ params }: Props) {
           </p>
         )}
       </header>
-      <ArticleContent html={post.content} />
+      <div className="max-w-2xl mx-auto">
+        <ArticleContent html={post.content} />
+      </div>
       <div className="flex justify-center pt-4">
         <StoryImageDownloader
           title={post.title}

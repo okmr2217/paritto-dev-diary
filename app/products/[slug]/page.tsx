@@ -1,28 +1,35 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ExternalLink, Github, ChevronDown } from "lucide-react";
+import { ExternalLink, Github } from "lucide-react";
+import { unified } from "unified";
+import remarkParse from "remark-parse";
+import remarkGfm from "remark-gfm";
+import remarkRehype from "remark-rehype";
+import rehypeStringify from "rehype-stringify";
 import { prisma } from "@/lib/prisma";
 import { getAllPosts } from "@/lib/posts";
 import { PostCard } from "@/components/post-card";
+import { ReleaseCard } from "@/components/release-card";
 import { ScreenshotGallery } from "@/components/product/screenshot-gallery";
 import {
   STATUS_LABELS,
   CATEGORY_LABELS,
   STATUS_COLORS,
   CATEGORY_COLORS,
-  RELEASE_TYPE_LABELS,
 } from "@/lib/product-constants";
 
 export const revalidate = 60;
 
-const RELEASE_TYPE_COLORS: Record<string, string> = {
-  MAJOR: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
-  MINOR: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  PATCH: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  HOTFIX:
-    "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
-};
+async function processMarkdown(content: string): Promise<string> {
+  const result = await unified()
+    .use(remarkParse)
+    .use(remarkGfm)
+    .use(remarkRehype)
+    .use(rehypeStringify)
+    .process(content);
+  return result.toString();
+}
 
 const STATUS_DOT_COLORS: Record<string, string> = {
   IDEA: "bg-slate-400",
@@ -95,6 +102,21 @@ export default async function ProductDetailPage({ params }: PageProps) {
   const relatedPosts = allPosts.filter((post) => post.productSlug === slug);
 
   const hasImages = product.images.length > 0;
+
+  const releasesWithHtml = await Promise.all(
+    product.releases.map(async (r) => ({
+      ...r,
+      contentHtml: r.content ? await processMarkdown(r.content) : "",
+      releaseDate: r.releaseDate.toISOString(),
+    })),
+  );
+
+  const productInfo = {
+    slug: product.slug,
+    name: product.name,
+    iconUrl: product.iconUrl,
+    themeColor: product.themeColor,
+  };
 
   return (
     <div className="space-y-12 pt-6">
@@ -188,42 +210,23 @@ export default async function ProductDetailPage({ params }: PageProps) {
       )}
 
       {/* ── 3. Release Notes ────────────────────────────────── */}
-      {product.releases.length > 0 && (
+      {releasesWithHtml.length > 0 && (
         <section>
           <SectionHeading>リリースノート</SectionHeading>
           <div className="space-y-2">
-            {product.releases.map((release, index) => (
-              <details
+            {releasesWithHtml.map((release, index) => (
+              <ReleaseCard
                 key={release.id}
-                open={index === 0}
-                className="group rounded-lg border border-border bg-card overflow-hidden"
-              >
-                <summary className="flex items-center gap-3 flex-wrap px-4 py-3 cursor-pointer hover:bg-muted/50 transition-colors [list-style:none] [&::-webkit-details-marker]:hidden">
-                  <span className="font-mono font-bold text-foreground text-sm">
-                    {release.version}
-                  </span>
-                  <span
-                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${RELEASE_TYPE_COLORS[release.type] ?? "bg-gray-100 text-gray-700"}`}
-                  >
-                    {RELEASE_TYPE_LABELS[release.type] ?? release.type}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {new Date(release.releaseDate).toLocaleDateString("ja-JP")}
-                  </span>
-                  <span className="font-medium text-foreground text-sm">
-                    {release.title}
-                  </span>
-                  <ChevronDown
-                    size={15}
-                    className="ml-auto shrink-0 text-muted-foreground transition-transform duration-200 group-open:rotate-180"
-                  />
-                </summary>
-                <div className="px-4 py-3 border-t border-border bg-muted/20">
-                  <p className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
-                    {release.content}
-                  </p>
-                </div>
-              </details>
+                version={release.version}
+                type={release.type}
+                releaseDate={release.releaseDate}
+                title={release.title}
+                contentHtml={release.contentHtml}
+                showContent
+                defaultOpen={index === 0}
+                showProduct={false}
+                product={productInfo}
+              />
             ))}
           </div>
         </section>
@@ -235,7 +238,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
           <SectionHeading>関連記事</SectionHeading>
           <div className="space-y-3">
             {relatedPosts.map((post) => (
-              <PostCard key={post.slug} post={post} />
+              <PostCard key={post.slug} post={post} productInfo={productInfo} />
             ))}
           </div>
         </section>
