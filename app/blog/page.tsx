@@ -20,7 +20,7 @@ export default async function BlogPage() {
     where: { isPublic: true },
     select: { slug: true, name: true, iconUrl: true, themeColor: true },
   });
-  const productMap = Object.fromEntries(products.map((p) => [p.slug, p]));
+  const productMap = Object.fromEntries(products.map((p: typeof products[number]) => [p.slug, p]));
 
   return (
     <div className="space-y-8 pt-6">
