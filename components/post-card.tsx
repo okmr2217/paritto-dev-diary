@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { PostMeta } from "@/lib/posts";
-import { CATEGORY_LABELS } from "@/lib/post-constants";
 
 export type PostCardProductInfo = {
   slug: string;
@@ -34,15 +33,9 @@ export function PostCard({ post, productInfo }: PostCardProps) {
             {post.description}
           </p>
 
-          {/* Category + Product */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="relative px-1.5 py-0.5 text-[11px] font-medium font-heading rounded border border-transparent overflow-hidden inline-block">
-              <span className="absolute inset-0 tech-gradient opacity-15" />
-              <span className="relative text-foreground">
-                {CATEGORY_LABELS[post.category]}
-              </span>
-            </span>
-            {productInfo && (
+          {/* Product */}
+          {productInfo && (
+            <div className="flex items-center gap-2 flex-wrap">
               <div
                 className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-medium shrink-0"
                 style={{
@@ -62,8 +55,8 @@ export function PostCard({ post, productInfo }: PostCardProps) {
                 )}
                 <span>{productInfo.name}</span>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </article>
     </Link>
