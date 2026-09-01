@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { PROFILE_LINKS } from "@/lib/constants";
-import { Github, Mail, Twitter, User } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 
 export const metadata: Metadata = {
@@ -17,7 +16,6 @@ export default function AboutPage() {
       <PageHero
         title="About"
         description="開発者のプロフィール、経歴、技術スタック、制作物などをまとめています。"
-        icon={User}
       />
 
       {/* Profile */}
@@ -424,7 +422,6 @@ export default function AboutPage() {
                 rel="noopener noreferrer"
                 className="group flex items-center gap-3 p-4 bg-card border border-border rounded-lg hover:border-accent transition-all duration-300"
               >
-                <Github className="w-6 h-6 text-muted-foreground group-hover:text-accent transition-colors" />
                 <div className="flex-1">
                   <div className="font-medium font-heading">GitHub</div>
                   <div className="text-sm text-muted-foreground">
@@ -441,7 +438,6 @@ export default function AboutPage() {
                 rel="noopener noreferrer"
                 className="group flex items-center gap-3 p-4 bg-card border border-border rounded-lg hover:border-accent transition-all duration-300"
               >
-                <Twitter className="w-6 h-6 text-muted-foreground group-hover:text-accent transition-colors" />
                 <div className="flex-1">
                   <div className="font-medium font-heading">X (Twitter)</div>
                   <div className="text-sm text-muted-foreground">
@@ -456,7 +452,6 @@ export default function AboutPage() {
                 href={`mailto:${PROFILE_LINKS.contact.email}`}
                 className="group flex items-center gap-3 p-4 bg-card border border-border rounded-lg hover:border-accent transition-all duration-300"
               >
-                <Mail className="w-6 h-6 text-muted-foreground group-hover:text-accent transition-colors" />
                 <div className="flex-1">
                   <div className="font-medium font-heading">Email</div>
                   <div className="text-sm text-muted-foreground">

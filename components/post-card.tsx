@@ -1,7 +1,5 @@
 import Link from "next/link";
-import { Package } from "lucide-react";
 import type { PostMeta } from "@/lib/posts";
-import { CATEGORY_LABELS } from "@/lib/post-constants";
 
 export type PostCardProductInfo = {
   slug: string;
@@ -35,15 +33,9 @@ export function PostCard({ post, productInfo }: PostCardProps) {
             {post.description}
           </p>
 
-          {/* Category + Product */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="relative px-1.5 py-0.5 text-[11px] font-medium font-heading rounded border border-transparent overflow-hidden inline-block">
-              <span className="absolute inset-0 tech-gradient opacity-15" />
-              <span className="relative text-foreground">
-                {CATEGORY_LABELS[post.category]}
-              </span>
-            </span>
-            {productInfo && (
+          {/* Product */}
+          {productInfo && (
+            <div className="flex items-center gap-2 flex-wrap">
               <div
                 className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-medium shrink-0"
                 style={{
@@ -53,20 +45,18 @@ export function PostCard({ post, productInfo }: PostCardProps) {
                   color: productInfo.themeColor ?? "var(--color-foreground)",
                 }}
               >
-                {productInfo.iconUrl ? (
+                {productInfo.iconUrl && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={productInfo.iconUrl}
                     alt={productInfo.name}
                     className="w-3.5 h-3.5 object-contain shrink-0"
                   />
-                ) : (
-                  <Package className="w-3 h-3 shrink-0" />
                 )}
                 <span>{productInfo.name}</span>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </article>
     </Link>

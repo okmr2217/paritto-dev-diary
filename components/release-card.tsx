@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Package, ChevronRight } from "lucide-react";
 import { RELEASE_TYPE_LABELS } from "@/lib/product-constants";
 
 const RELEASE_TYPE_COLORS: Record<string, string> = {
@@ -50,11 +49,12 @@ export function ReleaseCard({
             {/* Product icon */}
             <Link
               href={`/products/${product.slug}`}
-              className="shrink-0 flex items-center justify-center w-6 h-6 rounded overflow-hidden hover:opacity-80 transition-opacity"
+              className="shrink-0 flex items-center justify-center w-6 h-6 rounded overflow-hidden hover:opacity-80 transition-opacity text-[10px] font-semibold font-heading"
               style={{
                 backgroundColor: product.themeColor
                   ? `${product.themeColor}25`
                   : "var(--color-muted)",
+                color: product.themeColor ?? undefined,
               }}
               aria-label={product.name}
             >
@@ -66,7 +66,7 @@ export function ReleaseCard({
                   className="w-5 h-5 object-contain"
                 />
               ) : (
-                <Package className="w-3.5 h-3.5 text-muted-foreground" />
+                product.name.charAt(0)
               )}
             </Link>
             <Link
@@ -96,7 +96,9 @@ export function ReleaseCard({
       {showContent && contentHtml && (
         <details className="group" open={defaultOpen}>
           <summary className="flex items-center gap-1 text-xs text-muted-foreground cursor-pointer hover:text-accent list-none select-none">
-            <ChevronRight className="w-3 h-3 shrink-0 transition-transform duration-150 group-open:rotate-90" />
+            <span className="inline-block w-3 shrink-0 transition-transform duration-150 group-open:rotate-90">
+              ›
+            </span>
             変更内容
           </summary>
           <div

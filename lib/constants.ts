@@ -19,7 +19,7 @@ export const PROFILE_LINKS = {
   },
   contact: {
     github: "https://github.com/okmr2217",
-    x: "",
+    x: "https://x.com/daichi_web",
     email: "okumuradaichi2007@gmail.com",
   },
 } as const;

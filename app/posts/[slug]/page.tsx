@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description =
     post.description ||
     post.content.replace(/<[^>]*>/g, "").slice(0, 150).trim();
-  const url = `https://paritto-dev-diary.vercel.app/posts/${slug}`;
+  const url = `https://paritto.dev/posts/${slug}`;
 
   return {
     title: post.title,

@@ -3,7 +3,6 @@
 import { useState, useMemo, useTransition, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { LayoutGrid, List, Smartphone, Globe, Plug, Package } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
 import {
   STATUS_LABELS,
@@ -11,14 +10,6 @@ import {
   STATUS_COLORS,
   CATEGORY_COLORS,
 } from "@/lib/product-constants";
-
-const CATEGORY_ICONS: Record<string, React.ReactNode> = {
-  APP: <Smartphone className="w-5 h-5" />,
-  MCP: <Plug className="w-5 h-5" />,
-  SITE: <Globe className="w-5 h-5" />,
-  EXTENSION: <Package className="w-5 h-5" />,
-  LIBRARY: <Package className="w-5 h-5" />,
-};
 
 interface Product {
   slug: string;
@@ -126,23 +117,19 @@ function TableRow({ product }: TableRowProps) {
       <td className="px-4 py-3">
         <div className="flex items-center gap-3">
           <div
-            className="flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center overflow-hidden"
+            className="flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center overflow-hidden text-xs font-semibold font-heading"
             style={{
               backgroundColor: product.themeColor
                 ? `${product.themeColor}20`
                 : "var(--color-muted)",
+              color: product.themeColor ?? undefined,
             }}
           >
             {product.iconUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={product.iconUrl} alt={product.name} className="w-6 h-6 object-contain" />
             ) : (
-              <span
-                className="opacity-60"
-                style={{ color: product.themeColor ?? undefined }}
-              >
-                {CATEGORY_ICONS[product.category] ?? <Package className="w-5 h-5" />}
-              </span>
+              product.name.charAt(0)
             )}
           </div>
           <div className="min-w-0">
@@ -318,25 +305,25 @@ export function ProductsClient({ products }: ProductsClientProps) {
           <div className="hidden md:flex items-center gap-1 border border-border rounded-lg p-0.5 self-start sm:self-auto">
             <button
               onClick={() => handleViewChange("grid")}
-              className={`p-1.5 rounded transition-colors ${
+              className={`px-2 py-1 rounded text-xs transition-colors ${
                 viewMode === "grid"
                   ? "bg-foreground text-background"
                   : "text-muted-foreground hover:text-foreground"
               }`}
               aria-label="カード表示"
             >
-              <LayoutGrid size={14} />
+              カード
             </button>
             <button
               onClick={() => handleViewChange("table")}
-              className={`p-1.5 rounded transition-colors ${
+              className={`px-2 py-1 rounded text-xs transition-colors ${
                 viewMode === "table"
                   ? "bg-foreground text-background"
                   : "text-muted-foreground hover:text-foreground"
               }`}
               aria-label="テーブル表示"
             >
-              <List size={14} />
+              テーブル
             </button>
           </div>
         </div>

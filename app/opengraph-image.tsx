@@ -57,7 +57,7 @@ export default async function Image() {
                 marginBottom: '16px',
               }}
             >
-              パリッと開発日記
+              paritto.dev
             </div>
             <div
               style={{
@@ -86,13 +86,13 @@ export default async function Image() {
                   key={tech}
                   style={{
                     display: 'flex',
-                    backgroundColor: '#eff6ff',
-                    color: '#2563eb',
+                    backgroundColor: '#f3f4f6',
+                    color: '#111827',
                     borderRadius: '9999px',
                     padding: '6px 16px',
                     fontSize: '15px',
                     fontWeight: 500,
-                    border: '1px solid #bfdbfe',
+                    border: '1px solid #e5e7eb',
                   }}
                 >
                   {tech}
@@ -159,7 +159,7 @@ export default async function Image() {
           }}
         >
           <div style={{ display: 'flex', fontSize: '14px', color: '#9ca3af' }}>
-            paritto-dev-diary.vercel.app
+            paritto.dev
           </div>
         </div>
       </div>

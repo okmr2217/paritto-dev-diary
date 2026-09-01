@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Smartphone, Globe, Plug, Package } from "lucide-react";
 import {
   STATUS_LABELS,
   CATEGORY_LABELS,
@@ -19,14 +18,6 @@ interface ProductCardProps {
   latestVersionDate?: string | null;
   compact?: boolean;
 }
-
-const CATEGORY_ICONS: Record<string, React.ReactNode> = {
-  APP: <Smartphone className="w-6 h-6" />,
-  MCP: <Plug className="w-6 h-6" />,
-  SITE: <Globe className="w-6 h-6" />,
-  EXTENSION: <Package className="w-6 h-6" />,
-  LIBRARY: <Package className="w-6 h-6" />,
-};
 
 export function ProductCard({
   slug,
@@ -56,11 +47,12 @@ export function ProductCard({
         <div className="flex items-start gap-3">
           {/* Product icon */}
           <div
-            className="flex-shrink-0 w-11 h-11 rounded-lg flex items-center justify-center overflow-hidden"
+            className="flex-shrink-0 w-11 h-11 rounded-lg flex items-center justify-center overflow-hidden text-sm font-semibold font-heading"
             style={{
               backgroundColor: themeColor
                 ? `${themeColor}20`
                 : "var(--color-muted)",
+              color: themeColor ?? undefined,
             }}
           >
             {iconUrl ? (
@@ -71,12 +63,7 @@ export function ProductCard({
                 className="w-8 h-8 object-contain"
               />
             ) : (
-              <span
-                className="opacity-60"
-                style={{ color: themeColor ?? undefined }}
-              >
-                {CATEGORY_ICONS[category] ?? <Package className="w-6 h-6" />}
-              </span>
+              name.charAt(0)
             )}
           </div>
 

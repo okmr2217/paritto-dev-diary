@@ -3,7 +3,6 @@ import { Suspense } from "react";
 import { getAllPosts } from "@/lib/posts";
 import { Search } from "@/components/search";
 import { PageHero } from "@/components/page-hero";
-import { BookOpen } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 
 export const revalidate = 60;
@@ -27,7 +26,6 @@ export default async function BlogPage() {
       <PageHero
         title="Blog"
         description="Next.jsを中心としたモダンな技術スタックによる個人開発について発信しています。"
-        icon={BookOpen}
       />
       <Suspense fallback={null}>
         <Search posts={posts} productMap={productMap} />

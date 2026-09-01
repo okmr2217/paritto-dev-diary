@@ -6,7 +6,6 @@ import { PageHero } from "@/components/page-hero";
 import { ReleaseCard } from "@/components/release-card";
 import { ReleasesChart } from "./releases-chart";
 import { ReleasesFilter } from "./releases-filter";
-import { Rocket, Rss, ChevronLeft, ChevronRight } from "lucide-react";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
@@ -138,15 +137,12 @@ export default async function ReleasesPage({
         <PageHero
           title="Releases"
           description="プロダクトのリリースノート一覧"
-          icon={Rocket}
         />
         <a
           href="/releases/rss.xml"
-          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-accent transition-colors mt-2 shrink-0"
-          aria-label="RSS フィード"
+          className="text-xs text-muted-foreground hover:text-accent transition-colors mt-2 shrink-0"
         >
-          <Rss className="w-4 h-4" />
-          <span className="hidden sm:inline">RSS</span>
+          RSS
         </a>
       </div>
 
@@ -212,15 +208,13 @@ export default async function ReleasesPage({
           {safeCurrentPage > 1 ? (
             <Link
               href={buildPageUrl(productFilter, typeFilter, safeCurrentPage - 1)}
-              className="flex items-center gap-1 px-3 py-1.5 text-sm border border-border rounded-lg hover:border-accent hover:text-accent transition-colors"
+              className="px-3 py-1.5 text-sm border border-border rounded-lg hover:border-accent hover:text-accent transition-colors"
             >
-              <ChevronLeft className="w-4 h-4" />
-              前へ
+              ← 前へ
             </Link>
           ) : (
-            <span className="flex items-center gap-1 px-3 py-1.5 text-sm border border-border rounded-lg text-muted-foreground opacity-40">
-              <ChevronLeft className="w-4 h-4" />
-              前へ
+            <span className="px-3 py-1.5 text-sm border border-border rounded-lg text-muted-foreground opacity-40">
+              ← 前へ
             </span>
           )}
 
@@ -231,15 +225,13 @@ export default async function ReleasesPage({
           {safeCurrentPage < totalPages ? (
             <Link
               href={buildPageUrl(productFilter, typeFilter, safeCurrentPage + 1)}
-              className="flex items-center gap-1 px-3 py-1.5 text-sm border border-border rounded-lg hover:border-accent hover:text-accent transition-colors"
+              className="px-3 py-1.5 text-sm border border-border rounded-lg hover:border-accent hover:text-accent transition-colors"
             >
-              次へ
-              <ChevronRight className="w-4 h-4" />
+              次へ →
             </Link>
           ) : (
-            <span className="flex items-center gap-1 px-3 py-1.5 text-sm border border-border rounded-lg text-muted-foreground opacity-40">
-              次へ
-              <ChevronRight className="w-4 h-4" />
+            <span className="px-3 py-1.5 text-sm border border-border rounded-lg text-muted-foreground opacity-40">
+              次へ →
             </span>
           )}
         </div>

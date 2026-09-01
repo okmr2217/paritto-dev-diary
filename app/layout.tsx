@@ -29,26 +29,26 @@ const jetBrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://paritto-dev-diary.vercel.app"
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://paritto.dev"
   ),
   title: {
-    default: "パリッと開発日記",
-    template: "%s | パリッと開発日記",
+    default: "paritto.dev",
+    template: "%s | paritto.dev",
   },
   description:
     "Next.js を中心としたモダンな技術スタックで、個人開発のリアルな試行錯誤を発信する Web Developer Daichi の開発日記ブログです。",
   openGraph: {
-    title: "パリッと開発日記",
+    title: "paritto.dev",
     description:
       "Next.js を中心としたモダンな技術スタックで、個人開発のリアルな試行錯誤を発信する Web Developer Daichi の開発日記ブログです。",
     type: "website",
     locale: "ja_JP",
-    url: "https://paritto-dev-diary.vercel.app/",
-    siteName: "パリッと開発日記",
+    url: "https://paritto.dev/",
+    siteName: "paritto.dev",
   },
   twitter: {
     card: "summary_large_image",
-    title: "パリッと開発日記",
+    title: "paritto.dev",
     description:
       "Next.js を中心としたモダンな技術スタックで、個人開発のリアルな試行錯誤を発信する Web Developer Daichi の開発日記ブログです。",
   },

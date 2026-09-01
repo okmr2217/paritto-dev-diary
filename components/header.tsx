@@ -4,14 +4,10 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Menu, X } from "lucide-react";
-import Image from "next/image";
 
 const navLinks = [
-  { href: "/blog", label: "Blog" },
   { href: "/products", label: "Products" },
-  { href: "/releases", label: "Releases" },
-  { href: "/about", label: "About" },
+  { href: "/blog", label: "Blog" },
 ];
 
 export function Header() {
@@ -40,12 +36,7 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const isActive = (href: string) => {
-    if (href === "/blog") return pathname.startsWith("/blog");
-    if (href === "/products") return pathname.startsWith("/products");
-    if (href === "/releases") return pathname.startsWith("/releases");
-    return pathname === href;
-  };
+  const isActive = (href: string) => pathname.startsWith(href);
 
   return (
     <header
@@ -55,15 +46,8 @@ export function Header() {
     >
       <div className="mx-auto flex h-12 max-w-4xl items-center justify-between px-4 md:px-6">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <Image
-            src="/icon-192.png"
-            alt="icon"
-            width={28}
-            height={28}
-            className="rounded-md"
-          />
-          <span className="text-sm font-bold">パリッと開発日記</span>
+        <Link href="/" className="flex items-center">
+          <span className="text-sm font-bold font-mono">paritto.dev</span>
         </Link>
 
         {/* Desktop Nav */}
@@ -74,7 +58,7 @@ export function Header() {
               href={href}
               className={`rounded-full px-[14px] py-[5px] text-[13px] transition-colors duration-150 ${
                 isActive(href)
-                  ? "bg-[rgba(12,197,176,0.08)] text-[#0CC5B0]"
+                  ? "bg-foreground/[0.06] text-foreground font-medium"
                   : "text-muted-foreground hover:bg-black/5 dark:hover:bg-white/8"
               }`}
             >
@@ -90,14 +74,10 @@ export function Header() {
           <ThemeToggle />
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/8 transition-colors"
+            className="flex h-8 items-center justify-center rounded-full px-3 text-xs hover:bg-black/5 dark:hover:bg-white/8 transition-colors"
             aria-label={isMobileMenuOpen ? "メニューを閉じる" : "メニューを開く"}
           >
-            {isMobileMenuOpen ? (
-              <X className="h-5 w-5" />
-            ) : (
-              <Menu className="h-5 w-5" />
-            )}
+            {isMobileMenuOpen ? "閉じる" : "メニュー"}
           </button>
         </div>
       </div>
@@ -116,7 +96,7 @@ export function Header() {
               onClick={() => setIsMobileMenuOpen(false)}
               className={`rounded-lg px-4 py-2.5 text-sm transition-colors duration-150 ${
                 isActive(href)
-                  ? "bg-[rgba(12,197,176,0.08)] text-[#0CC5B0]"
+                  ? "bg-foreground/[0.06] text-foreground font-medium"
                   : "text-muted-foreground hover:bg-black/5 dark:hover:bg-white/8"
               }`}
             >

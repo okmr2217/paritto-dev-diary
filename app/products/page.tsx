@@ -4,7 +4,6 @@ import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
 import { PageHero } from "@/components/page-hero";
 import { ProductsClient } from "./products-client";
-import { Package } from "lucide-react";
 
 export const revalidate = 60;
 
@@ -68,7 +67,6 @@ export default async function ProductsPage() {
         <PageHero
           title="Products"
           description="個人開発した制作物の一覧です。"
-          icon={Package}
         />
         <div className="flex gap-2 flex-wrap">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground">

@@ -9,7 +9,6 @@ import rehypeSlug from "rehype-slug";
 import rehypeStringify from "rehype-stringify";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BookOpen, Package } from "lucide-react";
 import { ArticleContent } from "@/components/article-content";
 import { PageHero } from "@/components/page-hero";
 import { prisma } from "@/lib/prisma";
@@ -17,20 +16,20 @@ import { STATUS_COLORS, STATUS_LABELS } from "@/lib/product-constants";
 
 const DESCRIPTION =
   "Yarukoto, Peak Log, ツケカン, Stockee などのアプリ群に通底する設計思想。何を、なぜ、どのように記録するのか。";
-const URL = "https://paritto-dev-diary.vercel.app/philosophy";
+const URL = "https://paritto.dev/philosophy";
 
 export const metadata: Metadata = {
-  title: "設計思想 | パリッと開発日記",
+  title: "設計思想 | paritto.dev",
   description: DESCRIPTION,
   openGraph: {
-    title: "設計思想 | パリッと開発日記",
+    title: "設計思想 | paritto.dev",
     description: DESCRIPTION,
     type: "article",
     url: URL,
   },
   twitter: {
     card: "summary_large_image",
-    title: "設計思想 | パリッと開発日記",
+    title: "設計思想 | paritto.dev",
     description: DESCRIPTION,
   },
 };
@@ -73,7 +72,6 @@ export default async function PhilosophyPage() {
       <PageHero
         title="Philosophy（設計思想）"
         description="Yarukoto / Peak Log / ツケカン / Stockee / Launchpad に共通する、記録と振り返りの考え方。"
-        icon={BookOpen}
       />
 
       <div className="max-w-2xl mx-auto">
@@ -98,11 +96,12 @@ export default async function PhilosophyPage() {
                   className="group flex gap-4 p-4 bg-card border border-border rounded-lg hover:border-accent transition-all duration-200"
                 >
                   <div
-                    className="relative w-12 h-12 rounded-xl overflow-hidden shrink-0 flex items-center justify-center"
+                    className="relative w-12 h-12 rounded-xl overflow-hidden shrink-0 flex items-center justify-center text-sm font-semibold font-heading"
                     style={{
                       backgroundColor: product.themeColor
                         ? `${product.themeColor}20`
                         : "var(--color-muted)",
+                      color: product.themeColor ?? undefined,
                     }}
                   >
                     {product.iconUrl ? (
@@ -113,10 +112,7 @@ export default async function PhilosophyPage() {
                         className="w-9 h-9 object-contain"
                       />
                     ) : (
-                      <Package
-                        className="w-6 h-6 text-muted-foreground opacity-60"
-                        style={{ color: product.themeColor ?? undefined }}
-                      />
+                      product.name.charAt(0)
                     )}
                   </div>
 
