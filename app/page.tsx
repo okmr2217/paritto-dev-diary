@@ -51,11 +51,8 @@ export default async function Home() {
       {/* ── Hero / self-intro ────────────────────────────────── */}
       <section className="pt-6 space-y-8">
         <div className="space-y-3">
-          <p className="text-xs font-mono text-muted-foreground tracking-[0.2em] uppercase">
+          <h1 className="text-3xl md:text-4xl font-bold font-heading font-mono leading-[1.15]">
             paritto.dev
-          </p>
-          <h1 className="text-3xl md:text-4xl font-bold font-heading leading-[1.15]">
-            Daichi の開発日記
           </h1>
           <p className="text-sm md:text-base text-muted-foreground leading-relaxed max-w-lg">
             Next.js を中心としたモダンな技術スタックで、
