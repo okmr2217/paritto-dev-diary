@@ -23,12 +23,12 @@ const PROFILE_FACTS = [
 
 export default async function Home() {
   const posts = getAllPosts();
-  const recentPosts = posts.slice(0, 3);
+  const recentPosts = posts.slice(0, 8);
 
   const recentProducts = await prisma.product.findMany({
     where: { isPublic: true },
     orderBy: { sortOrder: "asc" },
-    take: 5,
+    take: 6,
     select: {
       slug: true,
       name: true,
