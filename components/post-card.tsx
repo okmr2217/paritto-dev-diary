@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Package } from "lucide-react";
 import type { PostMeta } from "@/lib/posts";
 import { CATEGORY_LABELS } from "@/lib/post-constants";
 
@@ -53,15 +52,13 @@ export function PostCard({ post, productInfo }: PostCardProps) {
                   color: productInfo.themeColor ?? "var(--color-foreground)",
                 }}
               >
-                {productInfo.iconUrl ? (
+                {productInfo.iconUrl && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={productInfo.iconUrl}
                     alt={productInfo.name}
                     className="w-3.5 h-3.5 object-contain shrink-0"
                   />
-                ) : (
-                  <Package className="w-3 h-3 shrink-0" />
                 )}
                 <span>{productInfo.name}</span>
               </div>

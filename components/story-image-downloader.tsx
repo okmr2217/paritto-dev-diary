@@ -133,11 +133,8 @@ export function StoryImageDownloader({
       ctx.fillStyle = "#fafaf9";
       ctx.fillRect(0, 0, W, H);
 
-      // Subtle top accent gradient bar
-      const accentGrad = ctx.createLinearGradient(0, 0, W, 0);
-      accentGrad.addColorStop(0, "#0ea5e9");
-      accentGrad.addColorStop(1, "#6366f1");
-      ctx.fillStyle = accentGrad;
+      // Subtle top accent bar
+      ctx.fillStyle = "#111111";
       ctx.fillRect(0, 0, W, 6);
 
       let y = PAD + 20;
@@ -145,7 +142,7 @@ export function StoryImageDownloader({
       // --- Logo icon + Site name (horizontal) ---
       const logoImg = await loadImage("/icon-192.png");
       const logoSize = 52;
-      const siteNameText = "パリッと開発日記";
+      const siteNameText = "paritto.dev";
       ctx.font = "600 30px 'IBM Plex Sans JP', 'Noto Sans JP', sans-serif";
       const siteNameWidth = ctx.measureText(siteNameText).width;
       const gap = 16;
@@ -250,14 +247,11 @@ export function StoryImageDownloader({
       }
 
       // --- Bottom section ---
-      // Gradient accent line
+      // Accent line
       const lineW = 80;
       const lineX = (W - lineW) / 2;
       const lineY = H - PAD - 70;
-      const lineGrad = ctx.createLinearGradient(lineX, 0, lineX + lineW, 0);
-      lineGrad.addColorStop(0, "#0ea5e9");
-      lineGrad.addColorStop(1, "#6366f1");
-      ctx.fillStyle = lineGrad;
+      ctx.fillStyle = "#111111";
       ctx.beginPath();
       ctx.roundRect(lineX, lineY, lineW, 4, 2);
       ctx.fill();
@@ -266,7 +260,7 @@ export function StoryImageDownloader({
       ctx.fillStyle = "#94a3b8";
       ctx.font = "400 22px 'Noto Sans JP', sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("paritto-dev-diary.vercel.app", W / 2, H - PAD - 20);
+      ctx.fillText("paritto.dev", W / 2, H - PAD - 20);
 
       // --- Download ---
       canvas.toBlob((blob) => {

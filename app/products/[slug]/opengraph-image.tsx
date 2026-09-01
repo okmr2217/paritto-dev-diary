@@ -120,8 +120,8 @@ export default async function Image({ params }: { params: Promise<{ slug: string
                     width: '128px',
                     height: '128px',
                     borderRadius: '16px',
-                    backgroundColor: '#eff6ff',
-                    color: '#2563eb',
+                    backgroundColor: '#f3f4f6',
+                    color: '#111827',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -186,8 +186,8 @@ export default async function Image({ params }: { params: Promise<{ slug: string
                     key={tech}
                     style={{
                       display: 'flex',
-                      backgroundColor: '#eff6ff',
-                      color: '#2563eb',
+                      backgroundColor: '#f3f4f6',
+                      color: '#111827',
                       borderRadius: '9999px',
                       padding: '6px 16px',
                       fontSize: '15px',
@@ -295,10 +295,10 @@ export default async function Image({ params }: { params: Promise<{ slug: string
           }}
         >
           <div style={{ display: 'flex', fontSize: '16px', color: '#6b7280', fontWeight: 500 }}>
-            パリッと開発日記
+            paritto.dev
           </div>
           <div style={{ display: 'flex', fontSize: '14px', color: '#9ca3af' }}>
-            {`paritto-dev-diary.vercel.app/products/${slug}`}
+            {`paritto.dev/products/${slug}`}
           </div>
         </div>
       </div>

@@ -53,7 +53,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   const profileImageBuffer = fs.readFileSync(path.join(process.cwd(), 'public/profile.jpg'))
   const profileImageSrc = `data:image/jpeg;base64,${profileImageBuffer.toString('base64')}`
 
-  const title = post?.title ?? 'パリッと開発日記'
+  const title = post?.title ?? 'paritto.dev'
   const description = post?.description ?? ''
   const categoryLabel = post?.category ? CATEGORY_LABELS[post.category] : null
   const date = post?.date ?? ''
@@ -90,13 +90,13 @@ export default async function Image({ params }: { params: Promise<{ slug: string
             <div
               style={{
                 display: 'flex',
-                backgroundColor: '#eff6ff',
-                color: '#2563eb',
+                backgroundColor: '#f3f4f6',
+                color: '#111827',
                 borderRadius: '9999px',
                 padding: '6px 18px',
                 fontSize: '16px',
                 fontWeight: 500,
-                border: '1px solid #bfdbfe',
+                border: '1px solid #e5e7eb',
               }}
             >
               {categoryLabel}
@@ -178,10 +178,10 @@ export default async function Image({ params }: { params: Promise<{ slug: string
             }}
           >
             <div style={{ display: 'flex', fontSize: '16px', fontWeight: 500, color: '#374151' }}>
-              パリッと開発日記
+              paritto.dev
             </div>
             <div style={{ display: 'flex', fontSize: '14px', color: '#9ca3af' }}>
-              paritto-dev-diary.vercel.app
+              paritto.dev
             </div>
           </div>
         </div>

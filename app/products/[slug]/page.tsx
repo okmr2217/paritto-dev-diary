@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ExternalLink, Github } from "lucide-react";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
@@ -165,7 +164,6 @@ export default async function ProductDetailPage({ params }: PageProps) {
                 className="inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
               >
                 アプリを開く
-                <ExternalLink size={14} />
               </a>
             )}
             {product.repositoryUrl && (
@@ -175,7 +173,6 @@ export default async function ProductDetailPage({ params }: PageProps) {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors"
               >
-                <Github size={14} />
                 リポジトリを見る
               </a>
             )}

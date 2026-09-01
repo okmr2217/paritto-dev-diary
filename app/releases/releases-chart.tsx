@@ -66,7 +66,7 @@ export function ReleasesChart({
           />
           <Bar
             dataKey="count"
-            fill="oklch(0.6 0.18 210)"
+            fill="oklch(0.45 0.005 240)"
             radius={[3, 3, 0, 0]}
           />
         </BarChart>
